@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 C. Bess. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "CBAsyncTestCase.h"
 
-@interface CBSearchKitTests : XCTestCase
+@interface CBSearchKitTests : CBAsyncTestCase
 
 @end
 
@@ -26,9 +26,9 @@
     [super tearDown];
 }
 
-- (void)testExample
+- (void)testSimpleSearch
 {
-    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+    // code
 }
 
 @end
