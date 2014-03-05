@@ -19,6 +19,7 @@ static NSString * gFTSEngineVersion = nil;
 
 @interface CBSIndexer () {
     dispatch_queue_t _indexQueue;
+    BOOL _databaseCreated;
 }
 
 @property (nonatomic, copy) NSString *databasePath;
@@ -37,8 +38,16 @@ static NSString * gFTSEngineVersion = nil;
     gFTSEngineVersion = kCBSFTSEngineVersion3;
 }
 
-- (instancetype)initWithDatabaseAtPath:(NSString *)dbPath {
-    return [self initWithDatabaseAtPath:dbPath indexName:kCBSDefaultIndexName];
+- (instancetype)initWithDatabaseNamed:(NSString *)dbName {
+    return [self initWithDatabaseNamed:dbName indexName:kCBSDefaultIndexName];
+}
+
+- (instancetype)initWithDatabaseNamed:(NSString *)dbName indexName:(NSString *)indexName {
+    NSString *dbPath = @":memory:";
+    if (dbName.length)
+        dbPath = [self cachedPathWithPathComponent:dbName];
+    
+    return [self initWithDatabaseAtPath:dbPath indexName:indexName];
 }
 
 - (instancetype)initWithDatabaseAtPath:(NSString *)dbPath indexName:(NSString *)indexName {
@@ -58,6 +67,16 @@ static NSString * gFTSEngineVersion = nil;
     return self;
 }
 
+#pragma mark - Misc
+
+- (NSString *)cachedPathWithPathComponent:(NSString *)pathComp {
+    if (!pathComp.length)
+        return [NSString string];
+    
+    NSString *path = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
+    return [path stringByAppendingPathComponent:pathComp];
+}
+
 - (void)createDatabaseQueueIfNeeded {
     NSAssert(self.indexName, @"No index name.");
     NSAssert(self.databasePath, @"No database path.");
@@ -68,6 +87,22 @@ static NSString * gFTSEngineVersion = nil;
     }
 }
 
+- (void)createFTSIfNeeded {
+    if (_databaseCreated)
+        return;
+    
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        NSString *query = [NSString stringWithFormat:@"CREATE VIRTUAL TABLE %@ USING %@ (item_id, contents, item_type)",
+                           self.indexName,
+                           gFTSEngineVersion];
+        BOOL success = [db executeUpdate:query];
+        
+        CBSError([db lastError]);
+        
+        _databaseCreated = success;
+    }];
+}
+
 #pragma mark - Indexing
 
 - (void)addItem:(id<CBSIndexItem>)item completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler {
@@ -75,66 +110,107 @@ static NSString * gFTSEngineVersion = nil;
 }
 
 - (void)addItems:(NSArray *)items completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler {
+    [self createDatabaseQueueIfNeeded];
+    [self createFTSIfNeeded];
+    
     __typeof__(self) __weak weakSelf = self;
     dispatch_async(_indexQueue, ^{
         NSMutableArray *indexedItems = [NSMutableArray array];
+        __block NSError *error = nil;
         
-        for (id<CBSIndexItem> item in items) {
-            if ([item canIndex]) {
-                // store index
+        [weakSelf.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+            NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:5];
+            NSString *query1 = [NSString stringWithFormat:
+                                @"INSERT INTO %@ (contents, item_type) VALUES (:contents, :type)",
+                                weakSelf.indexName];
+            NSString *query2 = [NSString stringWithFormat:
+                                @"INSERT INTO %@ (item_id, contents, item_type) "
+                                @"VALUES (:identifier, :contents, :type)",
+                                weakSelf.indexName];
+            
+            for (id<CBSIndexItem> item in items) {
+                // check self, if released, bail
+                if (!weakSelf) {
+                    *rollback = YES;
+                    return;
+                }
+                
+                if ([item canIndex]) {
+                    NSString *query = query1;
+                    // determine desired query to insert the data
+                    NSString *identifer = [item indexItemIdentifier];
+                    params[@"contents"] = [item indexTextContents];
+                    params[@"type"] = @([item indexItemType]);
+                    if (identifer.length) {
+                        query = query2;
+                        params[@"identifier"] = identifer;
+                    }
+                    
+                    // store index
+                    [db executeUpdate:query withParameterDictionary:params];
+                    [params removeAllObjects];
+                    
+                    if ([db hadError]) {
+                        error = [db lastError];
+                        CBSError(error);
+                        
+                        *rollback = YES;
+                        break;
+                    }
+                    
+                    [indexedItems addObject:item];
+                }
             }
-        }
+        }];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             if (completionHandler)
-                completionHandler(indexedItems, nil);
+                completionHandler(indexedItems, error);
         });
     });
 }
 
-- (id<CBSIndexItem>)addTextContents:(NSString *)contents completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler {
+- (id<CBSIndexItem>)addTextContents:(NSString *)contents itemType:(CBSIndexItemType)itemType completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler {
     CBSIndexDocument *doc = [CBSIndexDocument new];
     doc.indexTextContents = contents;
+    doc.indexItemType = itemType;
     //doc.indexMeta = meta;
     
-    [self addItem:doc completionHandler:^(NSArray *indexItems, NSError *error) {
-        // code
-    }];
+    [self addItem:doc completionHandler:completionHandler];
     
     return doc;
 }
 
 - (void)removeItem:(id<CBSIndexItem>)item {
-    
+    [self removeItems:@[item] completionHandler:nil];
 }
 
-- (void)removeItems:(NSArray *)items {
-    
-}
-
-- (void)removeItemWithID:(CBSIndexItemIdentifier)identifier {
-    
-}
-
-- (void)reindexWithItems:(NSArray *)items completionHandler:(CBSIndexerReindexCompletionHandler)completionHandler {
-    NSParameterAssert(items);
-    
-    [self createDatabaseQueueIfNeeded];
-    
+- (void)removeItems:(NSArray *)items completionHandler:(dispatch_block_t)completionHandler {
     __typeof__(self) __weak weakSelf = self;
     dispatch_async(_indexQueue, ^{
         [weakSelf.databaseQueue inDatabase:^(FMDatabase *db) {
-            [db executeUpdateWithFormat:@"CREATE VIRTUAL TABLE %@ USING %@ (item_id, contents)",
-             weakSelf.indexName,
-             gFTSEngineVersion];
+            for (id<CBSIndexItem> item in items) {
+                [db executeUpdate:[NSString stringWithFormat:@"DELETE FROM %@ WHERE item_id = %@",
+                 weakSelf.indexName,
+                 [item indexItemIdentifier]]];
+            }
         }];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (completionHandler) {
-                completionHandler(0, nil);
-            }
+            if (completionHandler)
+                completionHandler();
         });
     });
+}
+
+- (void)removeItemWithID:(CBSIndexItemIdentifier)identifier {
+    [self createDatabaseQueueIfNeeded];
+    
+    // create a temp obj
+    CBSIndexDocument *item = [CBSIndexDocument new];
+    item.indexItemIdentifier = identifier;
+    
+    [self removeItem:item];
 }
 
 - (void)reindexWithCompletionHandler:(CBSIndexerReindexCompletionHandler)completionHandler {
@@ -144,9 +220,13 @@ static NSString * gFTSEngineVersion = nil;
     dispatch_async(_indexQueue, ^{
         [weakSelf.databaseQueue inDatabase:^(FMDatabase *db) {
             // rebuild index structure
-            [db executeUpdateWithFormat:@"INSERT INTO %@(%@) VALUES ('rebuild')",
+            [db executeUpdate:[NSString stringWithFormat:@"INSERT INTO %@(%@) VALUES ('rebuild')",
              weakSelf.indexName,
-             weakSelf.indexName];
+             weakSelf.indexName]];
+            
+            if ([db hadError]) {
+                CBSError([db lastError]);
+            }
         }];
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -164,9 +244,13 @@ static NSString * gFTSEngineVersion = nil;
     dispatch_async(_indexQueue, ^{
         [weakSelf.databaseQueue inDatabase:^(FMDatabase *db) {
             // optimize the internal structure of FTS table
-            [db executeUpdateWithFormat:@"INSERT INTO %s(%s) VALUES ('optimize')",
+            [db executeUpdate:[NSString stringWithFormat:@"INSERT INTO %s(%s) VALUES ('optimize')",
              [weakSelf.indexName UTF8String],
-             [weakSelf.indexName UTF8String]];
+             [weakSelf.indexName UTF8String]]];
+            
+            if ([db hadError]) {
+                CBSError([db lastError]);
+            }
         }];
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -175,6 +259,25 @@ static NSString * gFTSEngineVersion = nil;
             }
         });
     });
+}
+
+- (NSUInteger)indexCount {
+    __block NSUInteger count = 0;
+    [self createDatabaseQueueIfNeeded];
+    
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *result = [db executeQuery:[@"SELECT COUNT(rowid) FROM " stringByAppendingString:self.indexName]];
+        if ([result next]) {
+            count = [result unsignedLongLongIntForColumnIndex:0];
+        }
+        [result close];
+        
+        if ([db hadError]) {
+            CBSError([db lastError]);
+        }
+    }];
+    
+    return count;
 }
 
 @end

@@ -10,6 +10,15 @@
 
 // identifier alias
 typedef NSString* CBSIndexItemIdentifier;
+// index item type
+typedef NSInteger CBSIndexItemType;
+/**
+ Index item type that indicates the type should be ignored.
+ 
+ @discussion This is usually used by index item queries to include all items in the results.
+ */
+extern NSInteger const CBSIndexItemTypeIgnore;
+
 
 /**
  An index database item.
@@ -17,11 +26,9 @@ typedef NSString* CBSIndexItemIdentifier;
 @protocol CBSIndexItem <NSObject>
 
 /**
- The name of the property/key that will store the indexer item identifier.
- 
- @discussion This will be used to get/set the identifier value. Uses KVC.
+ The identifier for the receiver in the index database.
  */
-- (NSString *)indexItemIdentifierKey;
+@property (nonatomic, copy) CBSIndexItemIdentifier indexItemIdentifier;
 
 /**
  The text contents to index.
@@ -36,6 +43,11 @@ typedef NSString* CBSIndexItemIdentifier;
  @discussion This is only evaluated during indexing operations.
  */
 - (BOOL)canIndex;
+
+/**
+ The item type for the receiver.
+ */
+- (CBSIndexItemType)indexItemType;
 
 /**
  Additional data to store with the index item.
@@ -55,6 +67,7 @@ typedef NSString* CBSIndexItemIdentifier;
 
 @property (nonatomic, copy) CBSIndexItemIdentifier indexItemIdentifier;
 @property (nonatomic, copy) NSString *indexTextContents;
+@property (nonatomic, assign) CBSIndexItemType indexItemType;
 // not supported, yet
 @property (nonatomic, copy) NSDictionary *indexMeta;
 

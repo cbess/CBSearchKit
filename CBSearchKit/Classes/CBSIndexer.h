@@ -26,31 +26,25 @@ typedef void(^CBSIndexerItemsCompletionHandler)(NSArray *indexItems, NSError *er
  */
 + (void)setFTSEngineVersion:(NSString *)version;
 
-- (instancetype)initWithDatabaseAtPath:(NSString *)dbPath;
+- (instancetype)initWithDatabaseNamed:(NSString *)dbName;
+- (instancetype)initWithDatabaseNamed:(NSString *)dbName indexName:(NSString *)indexName;
 - (instancetype)initWithDatabaseAtPath:(NSString *)dbPath indexName:(NSString *)indexName;
 
 #pragma mark - Indexing
 
-- (id<CBSIndexItem>)addTextContents:(NSString *)contents completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler;
+- (id<CBSIndexItem>)addTextContents:(NSString *)contents itemType:(CBSIndexItemType)itemType completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler;
 - (void)addItem:(id<CBSIndexItem>)item completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler;
 - (void)addItems:(NSArray *)items completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler;
 
 - (void)removeItemWithID:(CBSIndexItemIdentifier)identifier;
 - (void)removeItem:(id<CBSIndexItem>)item;
-- (void)removeItems:(NSArray *)items;
-
-/**
- Reindexes the specified items.
- 
- @param completionHandler The completion block for this operation. Runs on main thread.
- @discussion Asynchronous operation.
- */
-- (void)reindexWithItems:(NSArray *)items completionHandler:(CBSIndexerReindexCompletionHandler)completionHandler;
+- (void)removeItems:(NSArray *)items completionHandler:(dispatch_block_t)completionHandler;
 
 /**
  Reindexes the entire database.
  
- @discussion Rebuilds the indexes.
+ @param completionHandler The completion block for this operation. Runs on the main thread.
+ @discussion Rebuilds the indexes. Asynchronous operation.
  */
 - (void)reindexWithCompletionHandler:(CBSIndexerReindexCompletionHandler)completionHandler;
 
@@ -63,6 +57,8 @@ typedef void(^CBSIndexerItemsCompletionHandler)(NSArray *indexItems, NSError *er
  */
 - (void)optimizeIndexWithCompletionHandler:(dispatch_block_t)completionHandler;
 
+#pragma mark - Misc
+
 /**
  The path to the index database.
  */
@@ -73,5 +69,12 @@ typedef void(^CBSIndexerItemsCompletionHandler)(NSArray *indexItems, NSError *er
  @discussion This is the table name.
  */
 - (NSString *)indexName;
+
+/**
+ The total number of index items in the database.
+ 
+ @discussion Performs a COUNT query.
+ */
+- (NSUInteger)indexCount;
 
 @end

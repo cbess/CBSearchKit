@@ -8,6 +8,8 @@
 
 #import "CBSIndexDocument.h"
 
+NSInteger const CBSIndexItemTypeIgnore = -1;
+
 @implementation CBSIndexDocument
 
 - (NSString *)indexItemIdentifierKey {
@@ -16,6 +18,10 @@
 
 - (BOOL)canIndex {
     return YES;
+}
+
+- (CBSIndexItemType)indexItemType {
+    return CBSIndexItemTypeIgnore;
 }
 
 @end

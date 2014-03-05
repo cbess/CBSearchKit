@@ -26,9 +26,4 @@
     [super tearDown];
 }
 
-- (void)testSimpleSearch
-{
-    // code
-}
-
 @end
