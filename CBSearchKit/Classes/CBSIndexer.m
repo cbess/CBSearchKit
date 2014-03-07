@@ -30,13 +30,23 @@ static NSString * gFTSEngineVersion = nil;
 
 @implementation CBSIndexer
 
++ (void)initialize {
+    gFTSEngineVersion = kCBSFTSEngineVersion3;
+}
+
 + (void)setFTSEngineVersion:(NSString *)version {
     gFTSEngineVersion = version;
 }
 
-+ (void)initialize {
-    gFTSEngineVersion = kCBSFTSEngineVersion3;
++ (NSString *)stringWithDatabasePathWithPathComponent:(NSString *)pathComp {
+    if (!pathComp.length)
+        return [NSString string];
+    
+    NSString *path = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
+    return [path stringByAppendingPathComponent:pathComp];
 }
+
+#pragma mark - Init
 
 - (instancetype)initWithDatabaseNamed:(NSString *)dbName {
     return [self initWithDatabaseNamed:dbName indexName:kCBSDefaultIndexName];
@@ -45,7 +55,7 @@ static NSString * gFTSEngineVersion = nil;
 - (instancetype)initWithDatabaseNamed:(NSString *)dbName indexName:(NSString *)indexName {
     NSString *dbPath = @":memory:";
     if (dbName.length)
-        dbPath = [self cachedPathWithPathComponent:dbName];
+        dbPath = [[self class] stringWithDatabasePathWithPathComponent:dbName];
     
     return [self initWithDatabaseAtPath:dbPath indexName:indexName];
 }
@@ -69,14 +79,6 @@ static NSString * gFTSEngineVersion = nil;
 
 #pragma mark - Misc
 
-- (NSString *)cachedPathWithPathComponent:(NSString *)pathComp {
-    if (!pathComp.length)
-        return [NSString string];
-    
-    NSString *path = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
-    return [path stringByAppendingPathComponent:pathComp];
-}
-
 - (void)createDatabaseQueueIfNeeded {
     NSAssert(self.indexName, @"No index name.");
     NSAssert(self.databasePath, @"No database path.");
@@ -97,7 +99,9 @@ static NSString * gFTSEngineVersion = nil;
                            gFTSEngineVersion];
         BOOL success = [db executeUpdate:query];
         
-        CBSError([db lastError]);
+        if ([db hadError]) {
+            CBSError([db lastError]);
+        }
         
         _databaseCreated = success;
     }];
@@ -181,6 +185,10 @@ static NSString * gFTSEngineVersion = nil;
     return doc;
 }
 
+- (id<CBSIndexItem>)addTextContents:(NSString *)contents completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler {
+    return [self addTextContents:contents itemType:CBSIndexItemTypeIgnore completionHandler:completionHandler];
+}
+
 - (void)removeItem:(id<CBSIndexItem>)item {
     [self removeItems:@[item] completionHandler:nil];
 }
@@ -216,6 +224,8 @@ static NSString * gFTSEngineVersion = nil;
 - (void)reindexWithCompletionHandler:(CBSIndexerReindexCompletionHandler)completionHandler {
     [self createDatabaseQueueIfNeeded];
     
+    __block NSUInteger itemCount = 0;
+    __block NSError *error = nil;
     __typeof__(self) __weak weakSelf = self;
     dispatch_async(_indexQueue, ^{
         [weakSelf.databaseQueue inDatabase:^(FMDatabase *db) {
@@ -225,13 +235,16 @@ static NSString * gFTSEngineVersion = nil;
              weakSelf.indexName]];
             
             if ([db hadError]) {
-                CBSError([db lastError]);
+                error = [db lastError];
+                CBSError(error);
             }
         }];
         
+        itemCount = [weakSelf indexCount];
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             if (completionHandler) {
-                completionHandler(0, nil);
+                completionHandler(itemCount, error);
             }
         });
     });
@@ -244,9 +257,9 @@ static NSString * gFTSEngineVersion = nil;
     dispatch_async(_indexQueue, ^{
         [weakSelf.databaseQueue inDatabase:^(FMDatabase *db) {
             // optimize the internal structure of FTS table
-            [db executeUpdate:[NSString stringWithFormat:@"INSERT INTO %s(%s) VALUES ('optimize')",
-             [weakSelf.indexName UTF8String],
-             [weakSelf.indexName UTF8String]]];
+            [db executeUpdate:[NSString stringWithFormat:@"INSERT INTO %@(%@) VALUES ('optimize')",
+             weakSelf.indexName,
+             weakSelf.indexName]];
             
             if ([db hadError]) {
                 CBSError([db lastError]);

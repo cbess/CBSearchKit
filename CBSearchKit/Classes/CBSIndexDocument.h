@@ -63,7 +63,7 @@ extern NSInteger const CBSIndexItemTypeIgnore;
 /**
  Represents a concrete CBIndexItem type.
  */
-@interface CBSIndexDocument : NSObject <CBSIndexItem>
+@interface CBSIndexDocument : NSObject <CBSIndexItem, NSCopying>
 
 @property (nonatomic, copy) CBSIndexItemIdentifier indexItemIdentifier;
 @property (nonatomic, copy) NSString *indexTextContents;

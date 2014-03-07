@@ -10,7 +10,7 @@
 #import "CBSSearchKit.h"
 
 @interface CBSIndexerTests : CBAsyncTestCase
-
+@property (nonatomic, strong) CBSIndexer *indexer;
 @end
 
 @implementation CBSIndexerTests
@@ -18,29 +18,54 @@
 - (void)setUp
 {
     [super setUp];
-    // Put setup code here; it will be run once, before the first test case.
-}
-
-- (void)tearDown
-{
-    // Put teardown code here; it will be run once, after the last test case.
-    [super tearDown];
-}
-
-- (void)testCreateIndex
-{
-    // create in-mem index
-    CBSIndexer *indexer = [[CBSIndexer alloc] initWithDatabaseNamed:@""];
     
-    NSString *text = @"some text";
     [self beginAsyncOperation];
-    [indexer addTextContents:text itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *indexItems, NSError *error) {
-        [self finishedAsyncOperation];
+    // in-mem index database
+    self.indexer = [[CBSIndexer alloc] initWithDatabaseNamed:@""];
+}
+
+- (void)testCreateIndex {
+    NSString *text = @"some text";
+    __block NSInteger count = 0;
+    __typeof__(self) __weak weakSelf = self;
+    [self.indexer addTextContents:text itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *indexItems, NSError *error) {
+        count = indexItems.count;
+        [weakSelf finishedAsyncOperation];
     }];
     
     [self assertAsyncOperationTimeout];
     
-    XCTAssertTrue([indexer indexCount] == 1, @"wrong count");
+    XCTAssertTrue(count == 1, @"bad index item count");
+    XCTAssertTrue([self.indexer indexCount] == 1, @"wrong count");
+}
+
+- (void)testOptimize {
+    __typeof__(self) __weak weakSelf = self;
+    [self.indexer addTextContents:@"test" completionHandler:^(NSArray *indexItems, NSError *error) {
+        [weakSelf.indexer optimizeIndexWithCompletionHandler:^{
+            [weakSelf finishedAsyncOperation];
+        }];
+    }];
+    
+    [self assertAsyncOperationTimeout];
+}
+
+- (void)testReindex {
+    CBSIndexDocument *document = [CBSIndexDocument new];
+    document.indexTextContents = @"some text";
+    NSArray *documents = @[document, document.copy, document.copy];
+    
+    __typeof__(self) __weak weakSelf = self;
+    __block NSUInteger count = 0;
+    [self.indexer addItems:documents completionHandler:^(NSArray *indexItems, NSError *error) {
+        [weakSelf.indexer reindexWithCompletionHandler:^(NSUInteger itemCount, NSError *error) {
+            count = itemCount;
+            [weakSelf finishedAsyncOperation];
+        }];
+    }];
+    
+    [self assertAsyncOperationTimeout];
+    XCTAssertEqual(count, documents.count, @"bad count");
 }
 
 @end
