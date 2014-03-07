@@ -26,8 +26,8 @@ typedef void(^CBSSearcherItemsEnumerationHandler)(id<CBSIndexItem> item, BOOL *s
 
 - (void)itemsWithText:(NSString *)textContents
              itemType:(CBSIndexItemType)itemType
-               offset:(NSInteger)offset
-                limit:(NSInteger)limit
+               offset:(NSInteger)offset // not supported, yet
+                limit:(NSInteger)limit // not supported, yet
     completionHandler:(CBSSearcherItemsCompletionHandler)completionHandler;
 - (void)itemsWithText:(NSString *)textContents itemType:(CBSIndexItemType)itemType completionHandler:(CBSSearcherItemsCompletionHandler)completionHandler;
 - (void)itemsWithText:(NSString *)textContents completionHandler:(CBSSearcherItemsCompletionHandler)completionHandler;

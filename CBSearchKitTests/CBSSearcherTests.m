@@ -56,8 +56,8 @@
     NSString *text = @"*one*";
     CBSSearcher *searcher = [[CBSSearcher alloc] initWithIndexer:self.indexer];
     [self beginAsyncOperation];
-    [searcher itemsWithText:text itemType:CBSIndexItemTypeIgnore offset:0 limit:-1 completionHandler:^(NSArray *items, NSError *error) {
-        XCTAssertTrue(items.count, @"no items");
+    [searcher itemsWithText:text itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *items, NSError *error) {
+        XCTAssertTrue(items.count == 1, @"should be only one item");
         XCTAssertNil(error, @"error: %@", error);
         
         [self finishedAsyncOperation];
