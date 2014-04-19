@@ -80,6 +80,7 @@
 		921BAC7B18C2E7850074F396 /* CBSMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CBSMacros.h; path = Classes/CBSMacros.h; sourceTree = "<group>"; };
 		921BAC7C18C39FDC0074F396 /* CBSIndexerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBSIndexerTests.m; sourceTree = "<group>"; };
 		921BAC7E18C993D00074F396 /* CBSSearcherTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBSSearcherTests.m; sourceTree = "<group>"; };
+		921BAC8018CA93230074F396 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		9F5468D6DE0B4C65A3F7C0AD /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -110,6 +111,7 @@
 		921BAC2218B9D43B0074F396 = {
 			isa = PBXGroup;
 			children = (
+				921BAC8018CA93230074F396 /* README.md */,
 				921BAC3418B9D43B0074F396 /* CBSearchKit */,
 				921BAC5218B9D43B0074F396 /* CBSearchKitTests */,
 				921BAC2D18B9D43B0074F396 /* Frameworks */,
