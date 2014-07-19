@@ -12,11 +12,11 @@
 		92064FD3197B3B7800157F03 /* CBSIndexer.m in Sources */ = {isa = PBXBuildFile; fileRef = 92064FCB197B3B7800157F03 /* CBSIndexer.m */; };
 		92064FD4197B3B7800157F03 /* CBSSearcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 92064FCE197B3B7800157F03 /* CBSSearcher.m */; };
 		92064FD5197B3B7800157F03 /* CBSSearchManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 92064FD1197B3B7800157F03 /* CBSSearchManager.m */; };
+		92064FD8197B3C6F00157F03 /* CBSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 92064FD7197B3C6F00157F03 /* CBSAppDelegate.m */; };
 		921BAC2F18B9D43B0074F396 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 921BAC2E18B9D43B0074F396 /* Cocoa.framework */; };
 		921BAC3918B9D43B0074F396 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 921BAC3718B9D43B0074F396 /* InfoPlist.strings */; };
 		921BAC3B18B9D43B0074F396 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 921BAC3A18B9D43B0074F396 /* main.m */; };
 		921BAC3F18B9D43B0074F396 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 921BAC3D18B9D43B0074F396 /* Credits.rtf */; };
-		921BAC4218B9D43B0074F396 /* CBSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 921BAC4118B9D43B0074F396 /* CBSAppDelegate.m */; };
 		921BAC4518B9D43B0074F396 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 921BAC4318B9D43B0074F396 /* MainMenu.xib */; };
 		921BAC4718B9D43B0074F396 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 921BAC4618B9D43B0074F396 /* Images.xcassets */; };
 		921BAC4E18B9D43B0074F396 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 921BAC4D18B9D43B0074F396 /* XCTest.framework */; };
@@ -54,6 +54,8 @@
 		92064FCF197B3B7800157F03 /* CBSSearchKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBSSearchKit.h; sourceTree = "<group>"; };
 		92064FD0197B3B7800157F03 /* CBSSearchManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBSSearchManager.h; sourceTree = "<group>"; };
 		92064FD1197B3B7800157F03 /* CBSSearchManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBSSearchManager.m; sourceTree = "<group>"; };
+		92064FD6197B3C6F00157F03 /* CBSAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CBSAppDelegate.h; path = Classes/CBSAppDelegate.h; sourceTree = "<group>"; };
+		92064FD7197B3C6F00157F03 /* CBSAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CBSAppDelegate.m; path = Classes/CBSAppDelegate.m; sourceTree = "<group>"; };
 		921BAC2B18B9D43B0074F396 /* CBSearchKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CBSearchKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		921BAC2E18B9D43B0074F396 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		921BAC3118B9D43B0074F396 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -64,8 +66,6 @@
 		921BAC3A18B9D43B0074F396 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		921BAC3C18B9D43B0074F396 /* CBSearchKit-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CBSearchKit-Prefix.pch"; sourceTree = "<group>"; };
 		921BAC3E18B9D43B0074F396 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		921BAC4018B9D43B0074F396 /* CBSAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBSAppDelegate.h; sourceTree = "<group>"; };
-		921BAC4118B9D43B0074F396 /* CBSAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CBSAppDelegate.m; sourceTree = "<group>"; };
 		921BAC4418B9D43B0074F396 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		921BAC4618B9D43B0074F396 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		921BAC4C18B9D43B0074F396 /* CBSearchKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CBSearchKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -172,8 +172,8 @@
 		921BAC3418B9D43B0074F396 /* CBSearchKit */ = {
 			isa = PBXGroup;
 			children = (
-				921BAC4018B9D43B0074F396 /* CBSAppDelegate.h */,
-				921BAC4118B9D43B0074F396 /* CBSAppDelegate.m */,
+				92064FD6197B3C6F00157F03 /* CBSAppDelegate.h */,
+				92064FD7197B3C6F00157F03 /* CBSAppDelegate.m */,
 				92064FC7197B3B7800157F03 /* CBSearchKit */,
 				921BAC4318B9D43B0074F396 /* MainMenu.xib */,
 				921BAC4618B9D43B0074F396 /* Images.xcassets */,
@@ -408,7 +408,7 @@
 			files = (
 				92064FD5197B3B7800157F03 /* CBSSearchManager.m in Sources */,
 				921BAC3B18B9D43B0074F396 /* main.m in Sources */,
-				921BAC4218B9D43B0074F396 /* CBSAppDelegate.m in Sources */,
+				92064FD8197B3C6F00157F03 /* CBSAppDelegate.m in Sources */,
 				92064FD3197B3B7800157F03 /* CBSIndexer.m in Sources */,
 				92064FD4197B3B7800157F03 /* CBSSearcher.m in Sources */,
 				92064FD2197B3B7800157F03 /* CBSIndexDocument.m in Sources */,
