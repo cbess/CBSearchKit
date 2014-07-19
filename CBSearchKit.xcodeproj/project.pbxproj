@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		26C92969A1E14781A4CEDCD3 /* libPods-CBSearchKitTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1405251708D14769B0D81888 /* libPods-CBSearchKitTests.a */; };
+		92064FD2197B3B7800157F03 /* CBSIndexDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 92064FC9197B3B7800157F03 /* CBSIndexDocument.m */; };
+		92064FD3197B3B7800157F03 /* CBSIndexer.m in Sources */ = {isa = PBXBuildFile; fileRef = 92064FCB197B3B7800157F03 /* CBSIndexer.m */; };
+		92064FD4197B3B7800157F03 /* CBSSearcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 92064FCE197B3B7800157F03 /* CBSSearcher.m */; };
+		92064FD5197B3B7800157F03 /* CBSSearchManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 92064FD1197B3B7800157F03 /* CBSSearchManager.m */; };
 		921BAC2F18B9D43B0074F396 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 921BAC2E18B9D43B0074F396 /* Cocoa.framework */; };
 		921BAC3918B9D43B0074F396 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 921BAC3718B9D43B0074F396 /* InfoPlist.strings */; };
 		921BAC3B18B9D43B0074F396 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 921BAC3A18B9D43B0074F396 /* main.m */; };
@@ -20,13 +24,7 @@
 		921BAC5718B9D43B0074F396 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 921BAC5518B9D43B0074F396 /* InfoPlist.strings */; };
 		921BAC5918B9D43B0074F396 /* CBSearchKitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 921BAC5818B9D43B0074F396 /* CBSearchKitTests.m */; };
 		921BAC6318B9D44F0074F396 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 921BAC6218B9D44F0074F396 /* libsqlite3.dylib */; };
-		921BAC6618BA5EB50074F396 /* CBSIndexer.m in Sources */ = {isa = PBXBuildFile; fileRef = 921BAC6518BA5EB50074F396 /* CBSIndexer.m */; };
-		921BAC6718BA5EB50074F396 /* CBSIndexer.m in Sources */ = {isa = PBXBuildFile; fileRef = 921BAC6518BA5EB50074F396 /* CBSIndexer.m */; };
-		921BAC6A18BC44400074F396 /* CBSSearchManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 921BAC6918BC44400074F396 /* CBSSearchManager.m */; };
-		921BAC6B18BC44400074F396 /* CBSSearchManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 921BAC6918BC44400074F396 /* CBSSearchManager.m */; };
 		921BAC7418BEF72B0074F396 /* CBAsyncTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 921BAC7218BEF6F70074F396 /* CBAsyncTestCase.m */; };
-		921BAC7718BEF8D30074F396 /* CBSSearcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 921BAC7618BEF8D30074F396 /* CBSSearcher.m */; };
-		921BAC7A18C00C1A0074F396 /* CBSIndexDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 921BAC7918C00C1A0074F396 /* CBSIndexDocument.m */; };
 		921BAC7D18C39FDC0074F396 /* CBSIndexerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 921BAC7C18C39FDC0074F396 /* CBSIndexerTests.m */; };
 		921BAC7F18C993D00074F396 /* CBSSearcherTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 921BAC7E18C993D00074F396 /* CBSSearcherTests.m */; };
 		E35CBF97F456463EA4B42DF7 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F5468D6DE0B4C65A3F7C0AD /* libPods.a */; };
@@ -46,6 +44,16 @@
 		1405251708D14769B0D81888 /* libPods-CBSearchKitTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CBSearchKitTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		59A9C172E9944ACBADD894A4 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		86BB501C5FA04D3E92211348 /* Pods-CBSearchKitTests.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CBSearchKitTests.xcconfig"; path = "Pods/Pods-CBSearchKitTests.xcconfig"; sourceTree = "<group>"; };
+		92064FC8197B3B7800157F03 /* CBSIndexDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBSIndexDocument.h; sourceTree = "<group>"; };
+		92064FC9197B3B7800157F03 /* CBSIndexDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBSIndexDocument.m; sourceTree = "<group>"; };
+		92064FCA197B3B7800157F03 /* CBSIndexer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBSIndexer.h; sourceTree = "<group>"; };
+		92064FCB197B3B7800157F03 /* CBSIndexer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBSIndexer.m; sourceTree = "<group>"; };
+		92064FCC197B3B7800157F03 /* CBSMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBSMacros.h; sourceTree = "<group>"; };
+		92064FCD197B3B7800157F03 /* CBSSearcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBSSearcher.h; sourceTree = "<group>"; };
+		92064FCE197B3B7800157F03 /* CBSSearcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBSSearcher.m; sourceTree = "<group>"; };
+		92064FCF197B3B7800157F03 /* CBSSearchKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBSSearchKit.h; sourceTree = "<group>"; };
+		92064FD0197B3B7800157F03 /* CBSSearchManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBSSearchManager.h; sourceTree = "<group>"; };
+		92064FD1197B3B7800157F03 /* CBSSearchManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBSSearchManager.m; sourceTree = "<group>"; };
 		921BAC2B18B9D43B0074F396 /* CBSearchKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CBSearchKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		921BAC2E18B9D43B0074F396 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		921BAC3118B9D43B0074F396 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -66,18 +74,8 @@
 		921BAC5618B9D43B0074F396 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		921BAC5818B9D43B0074F396 /* CBSearchKitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CBSearchKitTests.m; sourceTree = "<group>"; };
 		921BAC6218B9D44F0074F396 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		921BAC6418BA5EB50074F396 /* CBSIndexer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CBSIndexer.h; path = Classes/CBSIndexer.h; sourceTree = "<group>"; };
-		921BAC6518BA5EB50074F396 /* CBSIndexer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CBSIndexer.m; path = Classes/CBSIndexer.m; sourceTree = "<group>"; };
-		921BAC6818BC44400074F396 /* CBSSearchManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CBSSearchManager.h; path = Classes/CBSSearchManager.h; sourceTree = "<group>"; };
-		921BAC6918BC44400074F396 /* CBSSearchManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CBSSearchManager.m; path = Classes/CBSSearchManager.m; sourceTree = "<group>"; };
-		921BAC6D18BC4D9D0074F396 /* CBSSearchKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CBSSearchKit.h; path = Classes/CBSSearchKit.h; sourceTree = "<group>"; };
 		921BAC7118BEF6F70074F396 /* CBAsyncTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBAsyncTestCase.h; sourceTree = "<group>"; };
 		921BAC7218BEF6F70074F396 /* CBAsyncTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBAsyncTestCase.m; sourceTree = "<group>"; };
-		921BAC7518BEF8D30074F396 /* CBSSearcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CBSSearcher.h; path = Classes/CBSSearcher.h; sourceTree = "<group>"; };
-		921BAC7618BEF8D30074F396 /* CBSSearcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CBSSearcher.m; path = Classes/CBSSearcher.m; sourceTree = "<group>"; };
-		921BAC7818C00C1A0074F396 /* CBSIndexDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CBSIndexDocument.h; path = Classes/CBSIndexDocument.h; sourceTree = "<group>"; };
-		921BAC7918C00C1A0074F396 /* CBSIndexDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CBSIndexDocument.m; path = Classes/CBSIndexDocument.m; sourceTree = "<group>"; };
-		921BAC7B18C2E7850074F396 /* CBSMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CBSMacros.h; path = Classes/CBSMacros.h; sourceTree = "<group>"; };
 		921BAC7C18C39FDC0074F396 /* CBSIndexerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBSIndexerTests.m; sourceTree = "<group>"; };
 		921BAC7E18C993D00074F396 /* CBSSearcherTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBSSearcherTests.m; sourceTree = "<group>"; };
 		921BAC8018CA93230074F396 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
@@ -108,6 +106,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		92064FC7197B3B7800157F03 /* CBSearchKit */ = {
+			isa = PBXGroup;
+			children = (
+				92064FC8197B3B7800157F03 /* CBSIndexDocument.h */,
+				92064FC9197B3B7800157F03 /* CBSIndexDocument.m */,
+				92064FCA197B3B7800157F03 /* CBSIndexer.h */,
+				92064FCB197B3B7800157F03 /* CBSIndexer.m */,
+				92064FCC197B3B7800157F03 /* CBSMacros.h */,
+				92064FCD197B3B7800157F03 /* CBSSearcher.h */,
+				92064FCE197B3B7800157F03 /* CBSSearcher.m */,
+				92064FCF197B3B7800157F03 /* CBSSearchKit.h */,
+				92064FD0197B3B7800157F03 /* CBSSearchManager.h */,
+				92064FD1197B3B7800157F03 /* CBSSearchManager.m */,
+			);
+			name = CBSearchKit;
+			path = Classes/CBSearchKit;
+			sourceTree = "<group>";
+		};
 		921BAC2218B9D43B0074F396 = {
 			isa = PBXGroup;
 			children = (
@@ -158,7 +174,7 @@
 			children = (
 				921BAC4018B9D43B0074F396 /* CBSAppDelegate.h */,
 				921BAC4118B9D43B0074F396 /* CBSAppDelegate.m */,
-				921BAC6C18BC44440074F396 /* CBSSearch */,
+				92064FC7197B3B7800157F03 /* CBSearchKit */,
 				921BAC4318B9D43B0074F396 /* MainMenu.xib */,
 				921BAC4618B9D43B0074F396 /* Images.xcassets */,
 				921BAC6E18BEF6F70074F396 /* Other Sources */,
@@ -197,23 +213,6 @@
 				921BAC5518B9D43B0074F396 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		921BAC6C18BC44440074F396 /* CBSSearch */ = {
-			isa = PBXGroup;
-			children = (
-				921BAC6D18BC4D9D0074F396 /* CBSSearchKit.h */,
-				921BAC7B18C2E7850074F396 /* CBSMacros.h */,
-				921BAC6418BA5EB50074F396 /* CBSIndexer.h */,
-				921BAC6518BA5EB50074F396 /* CBSIndexer.m */,
-				921BAC7518BEF8D30074F396 /* CBSSearcher.h */,
-				921BAC7618BEF8D30074F396 /* CBSSearcher.m */,
-				921BAC6818BC44400074F396 /* CBSSearchManager.h */,
-				921BAC6918BC44400074F396 /* CBSSearchManager.m */,
-				921BAC7818C00C1A0074F396 /* CBSIndexDocument.h */,
-				921BAC7918C00C1A0074F396 /* CBSIndexDocument.m */,
-			);
-			name = CBSSearch;
 			sourceTree = "<group>";
 		};
 		921BAC6E18BEF6F70074F396 /* Other Sources */ = {
@@ -407,12 +406,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				92064FD5197B3B7800157F03 /* CBSSearchManager.m in Sources */,
 				921BAC3B18B9D43B0074F396 /* main.m in Sources */,
-				921BAC6618BA5EB50074F396 /* CBSIndexer.m in Sources */,
-				921BAC7A18C00C1A0074F396 /* CBSIndexDocument.m in Sources */,
-				921BAC6A18BC44400074F396 /* CBSSearchManager.m in Sources */,
-				921BAC7718BEF8D30074F396 /* CBSSearcher.m in Sources */,
 				921BAC4218B9D43B0074F396 /* CBSAppDelegate.m in Sources */,
+				92064FD3197B3B7800157F03 /* CBSIndexer.m in Sources */,
+				92064FD4197B3B7800157F03 /* CBSSearcher.m in Sources */,
+				92064FD2197B3B7800157F03 /* CBSIndexDocument.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -420,8 +419,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				921BAC6B18BC44400074F396 /* CBSSearchManager.m in Sources */,
-				921BAC6718BA5EB50074F396 /* CBSIndexer.m in Sources */,
 				921BAC7D18C39FDC0074F396 /* CBSIndexerTests.m in Sources */,
 				921BAC5918B9D43B0074F396 /* CBSearchKitTests.m in Sources */,
 				921BAC7418BEF72B0074F396 /* CBAsyncTestCase.m in Sources */,
