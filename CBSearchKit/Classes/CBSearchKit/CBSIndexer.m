@@ -284,7 +284,7 @@ static NSString * gFTSEngineVersion = nil;
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
         FMResultSet *result = [db executeQuery:[@"SELECT COUNT(rowid) FROM " stringByAppendingString:weakSelf.indexName]];
         if ([result next]) {
-            count = [result unsignedLongLongIntForColumnIndex:0];
+            count = (NSUInteger) [result unsignedLongLongIntForColumnIndex:0];
         }
         [result close];
         
