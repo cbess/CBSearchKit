@@ -10,6 +10,7 @@
 #import <FMDB/FMDatabase.h>
 #import <FMDB/FMDatabaseQueue.h>
 #import <FMDB/FMResultSet.h>
+#import "CBSMacros.h"
 
 NSString * const kCBSDefaultIndexName = @"cbs_fts";
 NSString * const kCBSFTSEngineVersion3 = @"fts3";
@@ -93,9 +94,10 @@ static NSString * gFTSEngineVersion = nil;
     if (_databaseCreated)
         return;
     
+    __typeof__(self) __weak weakSelf = self;
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
         NSString *query = [NSString stringWithFormat:@"CREATE VIRTUAL TABLE %@ USING %@ (item_id, contents, item_type)",
-                           self.indexName,
+                           weakSelf.indexName,
                            gFTSEngineVersion];
         BOOL success = [db executeUpdate:query];
         
@@ -278,8 +280,9 @@ static NSString * gFTSEngineVersion = nil;
     __block NSUInteger count = 0;
     [self createDatabaseQueueIfNeeded];
     
+    __typeof__(self) __weak weakSelf = self;
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
-        FMResultSet *result = [db executeQuery:[@"SELECT COUNT(rowid) FROM " stringByAppendingString:self.indexName]];
+        FMResultSet *result = [db executeQuery:[@"SELECT COUNT(rowid) FROM " stringByAppendingString:weakSelf.indexName]];
         if ([result next]) {
             count = [result unsignedLongLongIntForColumnIndex:0];
         }
