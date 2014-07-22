@@ -51,7 +51,7 @@
 		92064FCC197B3B7800157F03 /* CBSMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBSMacros.h; sourceTree = "<group>"; };
 		92064FCD197B3B7800157F03 /* CBSSearcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBSSearcher.h; sourceTree = "<group>"; };
 		92064FCE197B3B7800157F03 /* CBSSearcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBSSearcher.m; sourceTree = "<group>"; };
-		92064FCF197B3B7800157F03 /* CBSSearchKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBSSearchKit.h; sourceTree = "<group>"; };
+		92064FCF197B3B7800157F03 /* CBSearchKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBSearchKit.h; sourceTree = "<group>"; };
 		92064FD0197B3B7800157F03 /* CBSSearchManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBSSearchManager.h; sourceTree = "<group>"; };
 		92064FD1197B3B7800157F03 /* CBSSearchManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBSSearchManager.m; sourceTree = "<group>"; };
 		92064FD6197B3C6F00157F03 /* CBSAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CBSAppDelegate.h; path = Classes/CBSAppDelegate.h; sourceTree = "<group>"; };
@@ -116,7 +116,7 @@
 				92064FCC197B3B7800157F03 /* CBSMacros.h */,
 				92064FCD197B3B7800157F03 /* CBSSearcher.h */,
 				92064FCE197B3B7800157F03 /* CBSSearcher.m */,
-				92064FCF197B3B7800157F03 /* CBSSearchKit.h */,
+				92064FCF197B3B7800157F03 /* CBSearchKit.h */,
 				92064FD0197B3B7800157F03 /* CBSSearchManager.h */,
 				92064FD1197B3B7800157F03 /* CBSSearchManager.m */,
 			);
