@@ -104,8 +104,11 @@
                 CBSIndexDocument *document = [CBSIndexDocument new];
                 document.indexTextContents = result[@"contents"];
                 document.indexItemIdentifier = result[@"item_id"];
-                NSData *metaData = result[@"item_meta"];
-                document.indexMeta = [NSJSONSerialization JSONObjectWithData:metaData options:0 error:&error];
+                
+                if (![result columnIsNull:@"item_meta"]) {
+                    NSData *metaData = result[@"item_meta"];
+                    document.indexMeta = [NSJSONSerialization JSONObjectWithData:metaData options:0 error:&error];
+                }
                 
                 if (error) {
                     break;
