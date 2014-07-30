@@ -149,6 +149,10 @@
     [self itemsWithText:textContents itemType:itemType offset:0 limit:0 completionHandler:completionHandler];
 }
 
+- (void)enumerateItemsWithText:(NSString *)textContents enumerationHandler:(CBSSearcherItemsEnumerationHandler)enumerationHandler {
+    [self enumerateItemsWithText:textContents itemType:CBSIndexItemTypeIgnore enumerationHandler:enumerationHandler];
+}
+
 - (void)enumerateItemsWithText:(NSString *)textContents itemType:(CBSIndexItemType)itemType enumerationHandler:(CBSSearcherItemsEnumerationHandler)enumerationHandler {
     self.enumerationHandler = enumerationHandler;
     [self itemsWithText:textContents itemType:itemType offset:0 limit:-1 completionHandler:nil];

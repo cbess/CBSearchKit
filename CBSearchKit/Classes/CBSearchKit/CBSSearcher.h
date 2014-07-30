@@ -32,5 +32,6 @@ typedef void(^CBSSearcherItemsEnumerationHandler)(id<CBSIndexItem> item, BOOL *s
 - (void)itemsWithText:(NSString *)textContents itemType:(CBSIndexItemType)itemType completionHandler:(CBSSearcherItemsCompletionHandler)completionHandler;
 - (void)itemsWithText:(NSString *)textContents completionHandler:(CBSSearcherItemsCompletionHandler)completionHandler;
 - (void)enumerateItemsWithText:(NSString *)textContents itemType:(CBSIndexItemType)itemType enumerationHandler:(CBSSearcherItemsEnumerationHandler)enumerationHandler;
+- (void)enumerateItemsWithText:(NSString *)textContents enumerationHandler:(CBSSearcherItemsEnumerationHandler)enumerationHandler;
 
 @end

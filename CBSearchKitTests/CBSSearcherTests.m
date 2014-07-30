@@ -47,14 +47,14 @@
 - (void)testSearch {
     [self buildIndex];
     
-    XCTAssertTrue([self.indexer indexCount] > 2, @"bad count");
+    XCTAssertEqual([self.indexer indexCount], 3, @"Bad count");
     
     NSString *text = @"*one*";
     CBSSearcher *searcher = [[CBSSearcher alloc] initWithIndexer:self.indexer];
     [self beginAsyncOperation];
     [searcher itemsWithText:text itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *items, NSError *error) {
-        XCTAssertEqual(items.count, 1, @"should be only one item");
-        XCTAssertNil(error, @"error: %@", error);
+        XCTAssertEqual(items.count, 1, @"Should be only one item");
+        XCTAssertNil(error, @"Error: %@", error);
         
         id<CBSIndexItem> item = items.lastObject;
         NSDictionary *meta = [item indexMeta];
