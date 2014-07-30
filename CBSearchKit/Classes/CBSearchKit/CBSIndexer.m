@@ -96,7 +96,7 @@ static NSString * gFTSEngineVersion = nil;
     
     __typeof__(self) __weak weakSelf = self;
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
-        NSString *query = [NSString stringWithFormat:@"CREATE VIRTUAL TABLE %@ USING %@ (item_id, contents, item_type)",
+        NSString *query = [NSString stringWithFormat:@"CREATE VIRTUAL TABLE %@ USING %@ (item_id, contents, item_type, item_meta)",
                            weakSelf.indexName,
                            gFTSEngineVersion];
         BOOL success = [db executeUpdate:query];
@@ -126,14 +126,8 @@ static NSString * gFTSEngineVersion = nil;
         
         [weakSelf.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
             NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:5];
-            NSString *query1 = [NSString stringWithFormat:
-                                @"INSERT INTO %@ (contents, item_type) VALUES (:contents, :type)",
-                                weakSelf.indexName];
-            NSString *query2 = [NSString stringWithFormat:
-                                @"INSERT INTO %@ (item_id, contents, item_type) "
-                                @"VALUES (:identifier, :contents, :type)",
-                                weakSelf.indexName];
-            
+
+            // try to index all documents
             for (id<CBSIndexItem> item in items) {
                 // check self, if released, bail
                 if (!weakSelf) {
@@ -142,17 +136,49 @@ static NSString * gFTSEngineVersion = nil;
                 }
                 
                 if ([item canIndex]) {
-                    NSString *query = query1;
+                    NSMutableArray *queryColumns = [NSMutableArray array];
+                    NSMutableArray *queryParamNames = [NSMutableArray array];
+                    
                     // determine desired query to insert the data
-                    NSString *identifer = [item indexItemIdentifier];
+                    
+                    // contents
+                    [queryColumns addObject:@"contents"];
+                    [queryParamNames addObject:@":contents"];
                     params[@"contents"] = [item indexTextContents];
+                    
+                    // item type
+                    [queryColumns addObject:@"item_type"];
+                    [queryParamNames addObject:@":type"];
                     params[@"type"] = @([item indexItemType]);
+                    
+                    // identifier
+                    NSString *identifer = [item indexItemIdentifier];
                     if (identifer.length) {
-                        query = query2;
+                        [queryColumns addObject:@"item_id"];
+                        [queryParamNames addObject:@":identifier"];
                         params[@"identifier"] = identifer;
                     }
                     
-                    // store index
+                    // meta
+                    if ([item indexMeta].count) {
+                        [queryColumns addObject:@"item_meta"];
+                        [queryParamNames addObject:@":meta"];
+                        params[@"meta"] = [NSJSONSerialization dataWithJSONObject:[item indexMeta]
+                                                                          options:0
+                                                                            error:&error];
+                        if (error) {
+                            CBSError(error);
+                            *rollback = YES;
+                            break;
+                        }
+                    }
+                    
+                    // build query, store index
+                    NSString *query = [NSString stringWithFormat:
+                                       @"INSERT INTO %@ (%@) VALUES (%@)",
+                                       weakSelf.indexName,
+                                       [queryColumns componentsJoinedByString:@","],
+                                       [queryParamNames componentsJoinedByString:@","]];
                     [db executeUpdate:query withParameterDictionary:params];
                     [params removeAllObjects];
                     
@@ -176,15 +202,19 @@ static NSString * gFTSEngineVersion = nil;
     });
 }
 
-- (id<CBSIndexItem>)addTextContents:(NSString *)contents itemType:(CBSIndexItemType)itemType completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler {
+- (id<CBSIndexItem>)addTextContents:(NSString *)contents itemType:(CBSIndexItemType)itemType meta:(NSDictionary *)meta completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler {
     CBSIndexDocument *doc = [CBSIndexDocument new];
     doc.indexTextContents = contents;
     doc.indexItemType = itemType;
-    //doc.indexMeta = meta;
+    doc.indexMeta = meta;
     
     [self addItem:doc completionHandler:completionHandler];
     
     return doc;
+}
+
+- (id<CBSIndexItem>)addTextContents:(NSString *)contents itemType:(CBSIndexItemType)itemType completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler {
+    return [self addTextContents:contents itemType:itemType meta:nil completionHandler:completionHandler];
 }
 
 - (id<CBSIndexItem>)addTextContents:(NSString *)contents completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler {
@@ -200,6 +230,8 @@ static NSString * gFTSEngineVersion = nil;
     dispatch_async(_indexQueue, ^{
         [weakSelf.databaseQueue inDatabase:^(FMDatabase *db) {
             for (id<CBSIndexItem> item in items) {
+                NSAssert([item indexItemIdentifier], @"Unable to remove item. No item identifier.");
+                
                 [db executeUpdate:[NSString stringWithFormat:@"DELETE FROM %@ WHERE item_id = %@",
                  weakSelf.indexName,
                  [item indexItemIdentifier]]];

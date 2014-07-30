@@ -93,7 +93,7 @@
                                       @"SELECT * FROM %@ WHERE %@ MATCH :contents",
                                       weakSelf.indexName,
                                       weakSelf.indexName];
-            // user the index item type if not ignored
+            // use the index item type if not ignored
             if (itemType != CBSIndexItemTypeIgnore) {
                 params[@"itemtype"] = @(itemType);
                 [query appendString:@"AND item_type = :itemtype"];
@@ -104,6 +104,12 @@
                 CBSIndexDocument *document = [CBSIndexDocument new];
                 document.indexTextContents = result[@"contents"];
                 document.indexItemIdentifier = result[@"item_id"];
+                NSData *metaData = result[@"item_meta"];
+                document.indexMeta = [NSJSONSerialization JSONObjectWithData:metaData options:0 error:&error];
+                
+                if (error) {
+                    break;
+                }
                 
                 // use the enumerator, if provided
                 if (weakSelf.enumerationHandler) {

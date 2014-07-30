@@ -7,7 +7,7 @@
 //
 
 #import "CBAsyncTestCase.h"
-#import "CBSSearchKit.h"
+#import "CBSearchKit.h"
 
 @interface CBSIndexerTests : CBAsyncTestCase
 @property (nonatomic, strong) CBSIndexer *indexer;
@@ -35,8 +35,8 @@
     
     [self assertAsyncOperationTimeout];
     
-    XCTAssertTrue(count == 1, @"bad index item count");
-    XCTAssertTrue([self.indexer indexCount] == 1, @"wrong count");
+    XCTAssertEqual(count, 1, @"bad index item count");
+    XCTAssertEqual([self.indexer indexCount], 1, @"wrong count");
 }
 
 - (void)testOptimize {

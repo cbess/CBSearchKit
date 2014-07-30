@@ -54,8 +54,7 @@ extern NSInteger const CBSIndexItemTypeIgnore;
  
  @discussion This data is not searchable, but is returned with the item.
  */
-// not supported, yet
-//- (NSDictionary *)indexMeta;
+- (NSDictionary *)indexMeta;
 
 @end
 
@@ -68,7 +67,6 @@ extern NSInteger const CBSIndexItemTypeIgnore;
 @property (nonatomic, copy) CBSIndexItemIdentifier indexItemIdentifier;
 @property (nonatomic, copy) NSString *indexTextContents;
 @property (nonatomic, assign) CBSIndexItemType indexItemType;
-// not supported, yet
 @property (nonatomic, copy) NSDictionary *indexMeta;
 
 @end
