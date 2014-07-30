@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "CBSearchKit"
-  s.version      = "0.2"
+  s.version      = "0.2.1"
   s.summary      = "Simple and flexible full text search for iOS and Mac. Using the sqlite3 FTS3/4 engine."
 
   # s.description  = <<-DESC
