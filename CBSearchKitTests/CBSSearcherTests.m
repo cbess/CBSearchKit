@@ -18,17 +18,6 @@
 
 @implementation CBSSearcherTests
 
-- (void)setUp
-{
-    [super setUp];
-}
-
-- (void)tearDown
-{
-    // Put teardown code here; it will be run once, after the last test case.
-    [super tearDown];
-}
-
 - (void)buildIndex {
     self.indexer = [[CBSIndexer alloc] initWithDatabaseNamed:nil];
     
@@ -66,7 +55,12 @@
     [searcher itemsWithText:text itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *items, NSError *error) {
         XCTAssertEqual(items.count, 1, @"should be only one item");
         XCTAssertNil(error, @"error: %@", error);
-        XCTAssertNotNil([items.lastObject indexMeta], @"No meta");
+        
+        id<CBSIndexItem> item = items.lastObject;
+        NSDictionary *meta = [item indexMeta];
+        
+        XCTAssertNotNil(meta, @"No meta");
+        XCTAssertEqualObjects(meta[@"idx"], @1, @"Wrong meta value");
         
         [self finishedAsyncOperation];
     }];
