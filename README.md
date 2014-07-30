@@ -5,7 +5,6 @@ Simple and flexible full text search for iOS and Mac. Using the sqlite3 FTS3/4 e
 
 ## Example Usage
 ```objc
-
 - (void)buildIndex {
     self.indexer = [[CBSIndexer alloc] initWithDatabaseNamed:nil];
     
@@ -35,15 +34,20 @@ Simple and flexible full text search for iOS and Mac. Using the sqlite3 FTS3/4 e
 - (void)testSearch {
     [self buildIndex];
     
-    XCTAssertTrue([self.indexer indexCount] > 2, @"bad count");
+    XCTAssertEqual([self.indexer indexCount], 3, @"Bad count");
     
     NSString *text = @"*one*";
     CBSSearcher *searcher = [[CBSSearcher alloc] initWithIndexer:self.indexer];
     [self beginAsyncOperation];
     [searcher itemsWithText:text itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *items, NSError *error) {
-        XCTAssertEqual(items.count, 1, @"should be only one item");
-        XCTAssertNil(error, @"error: %@", error);
-        XCTAssertNotNil([items.lastObject indexMeta], @"No meta");
+        XCTAssertEqual(items.count, 1, @"Should be only one item");
+        XCTAssertNil(error, @"Error: %@", error);
+        
+        id<CBSIndexItem> item = items.lastObject;
+        NSDictionary *meta = [item indexMeta];
+        
+        XCTAssertNotNil(meta, @"No meta");
+        XCTAssertEqualObjects(meta[@"idx"], @1, @"Wrong meta value");
         
         [self finishedAsyncOperation];
     }];
