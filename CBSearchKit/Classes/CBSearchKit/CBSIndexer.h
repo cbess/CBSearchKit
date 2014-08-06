@@ -58,9 +58,8 @@ typedef void(^CBSIndexerItemsCompletionHandler)(NSArray *indexItems, NSError *er
 /**
  Initializes the receiver using the specified database path.
  
- @param dbName The name of the database to be opened or created in the cache directory. If empty, then an in-memory
- database is used.
- @param indexName The name of the index within the database. If nil or empty, then the default index name is used.
+ @param dbName The path of the database to be opened.
+ @param indexName The name of the index within the database. If nil or empty, then the default index name is used (kCBSDefaultIndexName).
  */
 - (instancetype)initWithDatabaseAtPath:(NSString *)dbPath indexName:(NSString *)indexName;
 

@@ -50,7 +50,7 @@ static NSString * gFTSEngineVersion = nil;
 #pragma mark - Init
 
 - (instancetype)initWithDatabaseNamed:(NSString *)dbName {
-    return [self initWithDatabaseNamed:dbName indexName:kCBSDefaultIndexName];
+    return [self initWithDatabaseNamed:dbName indexName:nil];
 }
 
 - (instancetype)initWithDatabaseNamed:(NSString *)dbName indexName:(NSString *)indexName {
@@ -66,6 +66,10 @@ static NSString * gFTSEngineVersion = nil;
     if (self) {
         _databasePath = [dbPath copy];
         _indexName = [indexName copy];
+        
+        if (!_indexName) {
+            _indexName = kCBSDefaultIndexName;
+        }
     }
     return self;
 }
