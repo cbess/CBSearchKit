@@ -30,10 +30,6 @@ NSInteger const CBSIndexItemTypeIgnore = -1;
     return doc;
 }
 
-- (NSString *)indexItemIdentifierKey {
-    return @"indexItemIdentifier";
-}
-
 - (BOOL)canIndex {
     return YES;
 }
