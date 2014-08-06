@@ -18,10 +18,11 @@
 
 @implementation CBSSearcherTests
 
-- (void)buildIndex {
+- (NSArray *)buildIndex {
     self.indexer = [[CBSIndexer alloc] initWithDatabaseNamed:nil];
     
     CBSIndexDocument *document = [CBSIndexDocument new];
+    document.indexItemIdentifier = @"one-id";
     document.indexTextContents = @"this is one";
     document.indexMeta = @{@"idx": @1};
     
@@ -42,17 +43,22 @@
     }];
     
     [self waitForAsyncOperationOrTimeoutWithInterval:3];
+    
+    return documents;
 }
 
 - (void)testSearch {
-    [self buildIndex];
+    NSArray *indexedDocuments = [self buildIndex];
     
-    XCTAssertEqual([self.indexer indexCount], 3, @"Bad count");
+    XCTAssertEqual([self.indexer indexCount], indexedDocuments.count, @"Bad count");
     
-    NSString *text = @"*one*";
-    CBSSearcher *searcher = [[CBSSearcher alloc] initWithIndexer:self.indexer];
+    id<CBSIndexItem> oneDoc = indexedDocuments.firstObject;
+    NSString * const searchText = @"*one*";
+    
     [self beginAsyncOperation];
-    [searcher itemsWithText:text itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *items, NSError *error) {
+    
+    CBSSearcher *searcher = [[CBSSearcher alloc] initWithIndexer:self.indexer];
+    [searcher itemsWithText:searchText itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *items, NSError *error) {
         XCTAssertEqual(items.count, 1, @"Should be only one item");
         XCTAssertNil(error, @"Error: %@", error);
         
@@ -60,7 +66,8 @@
         NSDictionary *meta = [item indexMeta];
         
         XCTAssertNotNil(meta, @"No meta");
-        XCTAssertEqualObjects(meta[@"idx"], @1, @"Wrong meta value");
+        XCTAssertEqualObjects(meta[@"idx"], [oneDoc indexMeta][@"idx"], @"Wrong meta value");
+        XCTAssertEqualObjects([item indexItemIdentifier], [oneDoc indexItemIdentifier], @"Wrong index identifier");
         
         [self finishedAsyncOperation];
     }];
