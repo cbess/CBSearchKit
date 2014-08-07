@@ -15,8 +15,7 @@
 
 @implementation CBSIndexerTests
 
-- (void)setUp
-{
+- (void)setUp {
     [super setUp];
     
     [self beginAsyncOperation];

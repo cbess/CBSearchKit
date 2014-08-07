@@ -67,7 +67,10 @@ static NSString * gFTSEngineVersion = nil;
         _databasePath = [dbPath copy];
         _indexName = [indexName copy];
         
-        if (!_indexName) {
+        if (!_databasePath.length)
+            _databasePath = @":memory:";
+        
+        if (!_indexName.length) {
             _indexName = kCBSDefaultIndexName;
         }
     }
