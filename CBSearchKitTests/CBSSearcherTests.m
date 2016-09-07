@@ -6,11 +6,11 @@
 //  Copyright (c) 2014 C. Bess. All rights reserved.
 //
 
-#import "CBAsyncTestCase.h"
+#import <XCTest/XCTest.h>
 #import "CBSSearcher.h"
 #import "CBSIndexer.h"
 
-@interface CBSSearcherTests : CBAsyncTestCase
+@interface CBSSearcherTests : XCTestCase
 
 @property (nonatomic, strong) CBSIndexer *indexer;
 
@@ -36,13 +36,12 @@
     
     NSArray *documents = @[document, document2, document3];
     
-    __typeof__(self) __weak weakSelf = self;
-    [self beginAsyncOperation];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"build index"];
     [self.indexer addItems:documents completionHandler:^(NSArray *indexItems, NSError *error) {
-        [weakSelf finishedAsyncOperation];
+        [expectation fulfill];
     }];
     
-    [self waitForAsyncOperationOrTimeoutWithInterval:3];
+    [self waitForExpectationsWithTimeout:3 handler:nil];
     
     return documents;
 }
@@ -55,7 +54,7 @@
     id<CBSIndexItem> oneDoc = indexedDocuments.firstObject;
     NSString * const searchText = @"*one*";
     
-    [self beginAsyncOperation];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"build index"];
     
     CBSSearcher *searcher = [[CBSSearcher alloc] initWithIndexer:self.indexer];
     [searcher itemsWithText:searchText itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *items, NSError *error) {
@@ -69,10 +68,10 @@
         XCTAssertEqualObjects(meta[@"idx"], [oneDoc indexMeta][@"idx"], @"Wrong meta value");
         XCTAssertEqualObjects([item indexItemIdentifier], [oneDoc indexItemIdentifier], @"Wrong index identifier");
         
-        [self finishedAsyncOperation];
+        [expectation fulfill];
     }];
     
-    [self assertAsyncOperationTimeout];
+    [self waitForExpectationsWithTimeout:7 handler:nil];
 }
 
 @end
