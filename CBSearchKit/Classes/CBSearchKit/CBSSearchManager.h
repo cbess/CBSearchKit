@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "CBSIndexer.h"
 
+/// Not used, yet
 @interface CBSSearchManager : NSObject
 
 @property (nonatomic, readonly) CBSIndexer *searchIndexer;
