@@ -3,6 +3,12 @@ CBSearchKit
 
 Simple and flexible full text search for iOS and Mac. Using the sqlite3 FTS3/4 engine.
 
+## Setup
+
+- Link `libsqlite3.dylib`
+- Add `pod 'CBSearchKit'` to `Podfile`
+- Run `pod update`
+
 ## Example Usage
 ```objc
 - (NSArray *)buildIndex {

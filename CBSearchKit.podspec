@@ -16,8 +16,8 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "CBSearchKit"
-  s.version      = "0.2.2"
-  s.summary      = "Simple and flexible full text search for iOS and Mac. Using the sqlite3 FTS3/4 engine."
+  s.version      = "0.2.3"
+  s.summary      = "Simple and flexible full text search for iOS and macOS. Using the sqlite3 FTS3/4 engine."
 
   # s.description  = <<-DESC
   #
@@ -124,6 +124,6 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
-  s.dependency "FMDB", "2.3"
+  s.dependency "FMDB", "2.6.2"
 
 end
