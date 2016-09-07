@@ -142,7 +142,11 @@ static NSString * gFTSEngineVersion = nil;
                     return;
                 }
                 
-                if ([item canIndex]) {
+                if (![item canIndex]) {
+                    return;
+                }
+                
+                @autoreleasepool {
                     NSMutableArray *queryColumns = [NSMutableArray array];
                     NSMutableArray *queryParamNames = [NSMutableArray array];
                     

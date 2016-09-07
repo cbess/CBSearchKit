@@ -8,10 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-// identifier alias
-typedef NSString* CBSIndexItemIdentifier;
-// index item type
+/// identifier alias
+typedef NSString *CBSIndexItemIdentifier;
+
+/// index item type
 typedef NSInteger CBSIndexItemType;
+
 /**
  Index item type that indicates the type should be ignored.
  
@@ -20,22 +22,18 @@ typedef NSInteger CBSIndexItemType;
 extern NSInteger const CBSIndexItemTypeIgnore;
 
 
-/**
- An index database item.
- */
+/// A database index item.
 @protocol CBSIndexItem <NSObject>
 
-/**
- The identifier for the receiver in the index database.
- */
-@property (nonatomic, copy) CBSIndexItemIdentifier indexItemIdentifier;
+/// The identifier for the receiver in the index database.
+@property (nonatomic, copy, nullable) CBSIndexItemIdentifier indexItemIdentifier;
 
 /**
  The text contents to index.
  
  @discussion This is used to index the item. It is searchable.
  */
-- (NSString *)indexTextContents;
+- (nonnull NSString *)indexTextContents;
 
 /**
  A value indicating if the receiver can be indexed.
@@ -44,29 +42,25 @@ extern NSInteger const CBSIndexItemTypeIgnore;
  */
 - (BOOL)canIndex;
 
-/**
- The item type for the receiver.
- */
+/// The item type for the receiver.
 - (CBSIndexItemType)indexItemType;
 
 /**
  Additional data to store with the index item.
  
- @discussion This data is not searchable, but is returned with the item.
+ @discussion This data is not searchable, but is returned with the item. Should contain Foundation objects only (NSNumber, NSString, etc).
  */
-- (NSDictionary *)indexMeta;
+- (nullable NSDictionary *)indexMeta;
 
 @end
 
 
-/**
- Represents a concrete CBIndexItem type.
- */
+/// Represents a concrete CBIndexItem type.
 @interface CBSIndexDocument : NSObject <CBSIndexItem, NSCopying>
 
-@property (nonatomic, copy) CBSIndexItemIdentifier indexItemIdentifier;
-@property (nonatomic, copy) NSString *indexTextContents;
+@property (nonatomic, copy, nullable) CBSIndexItemIdentifier indexItemIdentifier;
+@property (nonatomic, copy, nonnull) NSString *indexTextContents;
 @property (nonatomic, assign) CBSIndexItemType indexItemType;
-@property (nonatomic, copy) NSDictionary *indexMeta;
+@property (nonatomic, copy, nullable) NSDictionary *indexMeta;
 
 @end
