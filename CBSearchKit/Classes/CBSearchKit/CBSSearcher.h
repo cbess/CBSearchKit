@@ -9,29 +9,29 @@
 #import <Foundation/Foundation.h>
 #import "CBSIndexDocument.h"
 
-typedef void(^CBSSearcherItemsCompletionHandler)(NSArray *items, NSError *error);
-typedef void(^CBSSearcherItemsEnumerationHandler)(id<CBSIndexItem> item, BOOL *stop);
+typedef void(^CBSSearcherItemsCompletionHandler)(NSArray<id<CBSIndexItem>> * _Nonnull items, NSError * _Nullable error);
+typedef void(^CBSSearcherItemsEnumerationHandler)(id<CBSIndexItem> _Nonnull item, BOOL * _Nonnull stop);
 
 @class CBSIndexer;
 
 @interface CBSSearcher : NSObject
 
-- (instancetype)initWithIndexer:(CBSIndexer *)indexer;
-- (instancetype)initWithDatabaseAtPath:(NSString *)dbPath indexName:(NSString *)indexName;
-- (instancetype)initWithDatabaseAtPath:(NSString *)dbPath;
-- (instancetype)initWithDatabaseNamed:(NSString *)dbName indexName:(NSString *)indexName;
-- (instancetype)initWithDatabaseNamed:(NSString *)dbName;
+- (nonnull)initWithIndexer:(nonnull CBSIndexer *)indexer;
+- (nonnull)initWithDatabaseAtPath:(nullable NSString *)dbPath indexName:(nonnull NSString *)indexName;
+- (nonnull)initWithDatabaseAtPath:(nullable NSString *)dbPath;
+- (nonnull)initWithDatabaseNamed:(nullable NSString *)dbName indexName:(nonnull NSString *)indexName;
+- (nonnull)initWithDatabaseNamed:(nullable NSString *)dbName;
 
-- (CBSIndexer *)indexer;
+- (nonnull CBSIndexer *)indexer;
 
-- (void)itemsWithText:(NSString *)textContents
+- (void)itemsWithText:(nonnull NSString *)textContents
              itemType:(CBSIndexItemType)itemType
                offset:(NSInteger)offset // not supported, yet
                 limit:(NSInteger)limit // not supported, yet
-    completionHandler:(CBSSearcherItemsCompletionHandler)completionHandler;
-- (void)itemsWithText:(NSString *)textContents itemType:(CBSIndexItemType)itemType completionHandler:(CBSSearcherItemsCompletionHandler)completionHandler;
-- (void)itemsWithText:(NSString *)textContents completionHandler:(CBSSearcherItemsCompletionHandler)completionHandler;
-- (void)enumerateItemsWithText:(NSString *)textContents itemType:(CBSIndexItemType)itemType enumerationHandler:(CBSSearcherItemsEnumerationHandler)enumerationHandler;
-- (void)enumerateItemsWithText:(NSString *)textContents enumerationHandler:(CBSSearcherItemsEnumerationHandler)enumerationHandler;
+    completionHandler:(nullable CBSSearcherItemsCompletionHandler)completionHandler;
+- (void)itemsWithText:(nonnull NSString *)textContents itemType:(CBSIndexItemType)itemType completionHandler:(nonnull CBSSearcherItemsCompletionHandler)completionHandler;
+- (void)itemsWithText:(nonnull NSString *)textContents completionHandler:(nonnull CBSSearcherItemsCompletionHandler)completionHandler;
+- (void)enumerateItemsWithText:(nonnull NSString *)textContents itemType:(CBSIndexItemType)itemType enumerationHandler:(nonnull CBSSearcherItemsEnumerationHandler)enumerationHandler;
+- (void)enumerateItemsWithText:(nonnull NSString *)textContents enumerationHandler:(nonnull CBSSearcherItemsEnumerationHandler)enumerationHandler;
 
 @end
