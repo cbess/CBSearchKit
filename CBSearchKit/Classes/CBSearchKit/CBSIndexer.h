@@ -9,12 +9,12 @@
 #import <Foundation/Foundation.h>
 #import "CBSIndexDocument.h"
 
-extern NSString * const kCBSDefaultIndexName;
-extern NSString * const kCBSFTSEngineVersion3; // fts3
-extern NSString * const kCBSFTSEngineVersion4; // fts4
+extern NSString * _Nonnull const kCBSDefaultIndexName;
+extern NSString * _Nonnull const kCBSFTSEngineVersion3; // fts3
+extern NSString * _Nonnull const kCBSFTSEngineVersion4; // fts4
 
-typedef void(^CBSIndexerReindexCompletionHandler)(NSUInteger itemCount, NSError *error);
-typedef void(^CBSIndexerItemsCompletionHandler)(NSArray *indexItems, NSError *error);
+typedef void(^CBSIndexerReindexCompletionHandler)(NSUInteger itemCount, NSError * _Nullable error);
+typedef void(^CBSIndexerItemsCompletionHandler)(NSArray * _Nonnull indexItems, NSError * _Nullable error);
 
 @class FMDatabaseQueue;
 
@@ -26,7 +26,7 @@ typedef void(^CBSIndexerItemsCompletionHandler)(NSArray *indexItems, NSError *er
  @param version Use kCBSFTSEngineVersion* constant.
  @discussion Defaults to kCBSFTSEngineVersion3.
  */
-+ (void)setFTSEngineVersion:(NSString *)version;
++ (void)setFTSEngineVersion:(nonnull NSString *)version;
 
 /**
  The path to the index database by appending the specified path component (usually the file name).
@@ -34,7 +34,7 @@ typedef void(^CBSIndexerItemsCompletionHandler)(NSArray *indexItems, NSError *er
  @param pathComponent The path component to append. If nil or empty, then an empty path will be returned.
  @discussion The path will be in the caches directory.
  */
-+ (NSString *)stringWithDatabasePathWithPathComponent:(NSString *)pathComponent;
++ (nonnull NSString *)stringWithDatabasePathWithPathComponent:(nullable NSString *)pathComponent;
 
 #pragma mark - Init
 
@@ -44,16 +44,16 @@ typedef void(^CBSIndexerItemsCompletionHandler)(NSArray *indexItems, NSError *er
  @param dbName The name of the database to be opened or created in the cache directory. If empty, then an in-memory
  database is used.
  */
-- (instancetype)initWithDatabaseNamed:(NSString *)dbName;
+- (nonnull)initWithDatabaseNamed:(nullable NSString *)dbName;
 
 /**
  Initializes the receiver using the specified database name.
  
- @param dbName The name of the database file to be opened or created in the cache directory. If empty, then an in-memory
+ @param dbName The name of the database file to be opened or created in the cache directory. If nil or empty, then an in-memory
  database is used.
  @param indexName The name of the index within the database. If nil or empty, then the default index name is used (kCBSDefaultIndexName).
  */
-- (instancetype)initWithDatabaseNamed:(NSString *)dbName indexName:(NSString *)indexName;
+- (nonnull)initWithDatabaseNamed:(nullable NSString *)dbName indexName:(nullable NSString *)indexName;
 
 /**
  Initializes the receiver using the specified database path.
@@ -61,19 +61,19 @@ typedef void(^CBSIndexerItemsCompletionHandler)(NSArray *indexItems, NSError *er
  @param dbName The path of the database to be opened.
  @param indexName The name of the index within the database. If nil or empty, then the default index name is used (kCBSDefaultIndexName).
  */
-- (instancetype)initWithDatabaseAtPath:(NSString *)dbPath indexName:(NSString *)indexName;
+- (nonnull)initWithDatabaseAtPath:(nullable NSString *)dbPath indexName:(nullable NSString *)indexName;
 
 #pragma mark - Indexing
 
-- (id<CBSIndexItem>)addTextContents:(NSString *)contents itemType:(CBSIndexItemType)itemType meta:(NSDictionary *)meta completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler;
-- (id<CBSIndexItem>)addTextContents:(NSString *)contents itemType:(CBSIndexItemType)itemType completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler;
-- (id<CBSIndexItem>)addTextContents:(NSString *)contents completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler;
-- (void)addItem:(id<CBSIndexItem>)item completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler;
-- (void)addItems:(NSArray *)items completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler;
+- (nonnull id<CBSIndexItem>)addTextContents:(nonnull NSString *)contents itemType:(CBSIndexItemType)itemType meta:(nullable NSDictionary *)meta completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
+- (nonnull id<CBSIndexItem>)addTextContents:(nonnull NSString *)contents itemType:(CBSIndexItemType)itemType completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
+- (nonnull id<CBSIndexItem>)addTextContents:(nonnull NSString *)contents completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
+- (void)addItem:(nonnull id<CBSIndexItem>)item completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
+- (void)addItems:(nonnull NSArray<id<CBSIndexItem>> *)items completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
 
-- (void)removeItemWithID:(CBSIndexItemIdentifier)identifier;
-- (void)removeItem:(id<CBSIndexItem>)item;
-- (void)removeItems:(NSArray *)items completionHandler:(dispatch_block_t)completionHandler;
+- (void)removeItemWithID:(nonnull CBSIndexItemIdentifier)identifier;
+- (void)removeItem:(nonnull id<CBSIndexItem>)item;
+- (void)removeItems:(nonnull NSArray<id<CBSIndexItem>> *)items completionHandler:(nullable dispatch_block_t)completionHandler;
 
 /**
  Reindexes the entire database.
@@ -81,7 +81,7 @@ typedef void(^CBSIndexerItemsCompletionHandler)(NSArray *indexItems, NSError *er
  @param completionHandler The completion block for this operation. Runs on the main thread.
  @discussion Rebuilds the indexes. Asynchronous operation.
  */
-- (void)reindexWithCompletionHandler:(CBSIndexerReindexCompletionHandler)completionHandler;
+- (void)reindexWithCompletionHandler:(nullable CBSIndexerReindexCompletionHandler)completionHandler;
 
 /**
  Optimizes the index database.
@@ -90,21 +90,21 @@ typedef void(^CBSIndexerItemsCompletionHandler)(NSArray *indexItems, NSError *er
  @discussion Asynchronous operation.
  @see http://www.sqlite.org/fts3.html#*fts4optcmd
  */
-- (void)optimizeIndexWithCompletionHandler:(dispatch_block_t)completionHandler;
+- (void)optimizeIndexWithCompletionHandler:(nullable dispatch_block_t)completionHandler;
 
 #pragma mark - Misc
 
 /**
  The path to the index database.
  */
-- (NSString *)databasePath;
+- (nonnull NSString *)databasePath;
 
 /**
  The name of the index in the database.
  
  @discussion This is the table name.
  */
-- (NSString *)indexName;
+- (nonnull NSString *)indexName;
 
 /**
  The total number of index items in the database.
@@ -118,6 +118,6 @@ typedef void(^CBSIndexerItemsCompletionHandler)(NSArray *indexItems, NSError *er
  
  @discussion The db queue used internally for prebuilt queries.
  */
-- (FMDatabaseQueue *)databaseQueue;
+- (nonnull FMDatabaseQueue *)databaseQueue;
 
 @end

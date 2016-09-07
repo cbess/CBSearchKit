@@ -55,8 +55,9 @@ static NSString * gFTSEngineVersion = nil;
 
 - (instancetype)initWithDatabaseNamed:(NSString *)dbName indexName:(NSString *)indexName {
     NSString *dbPath = @":memory:";
-    if (dbName.length)
+    if (dbName.length) {
         dbPath = [[self class] stringWithDatabasePathWithPathComponent:dbName];
+    }
     
     return [self initWithDatabaseAtPath:dbPath indexName:indexName];
 }
@@ -67,8 +68,9 @@ static NSString * gFTSEngineVersion = nil;
         _databasePath = [dbPath copy];
         _indexName = [indexName copy];
         
-        if (!_databasePath.length)
+        if (!_databasePath.length) {
             _databasePath = @":memory:";
+        }
         
         if (!_indexName.length) {
             _indexName = kCBSDefaultIndexName;
@@ -207,8 +209,9 @@ static NSString * gFTSEngineVersion = nil;
         }];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (completionHandler)
+            if (completionHandler) {
                 completionHandler(indexedItems, error);
+            }
         });
     });
 }
@@ -250,8 +253,9 @@ static NSString * gFTSEngineVersion = nil;
         }];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (completionHandler)
+            if (completionHandler) {
                 completionHandler();
+            }
         });
     });
 }
