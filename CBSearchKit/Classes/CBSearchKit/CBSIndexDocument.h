@@ -26,7 +26,7 @@ extern NSInteger const CBSIndexItemTypeIgnore;
 @protocol CBSIndexItem <NSObject>
 
 /// The identifier for the receiver in the index database.
-@property (nonatomic, copy, nullable) CBSIndexItemIdentifier indexItemIdentifier;
+- (nullable CBSIndexItemIdentifier)indexItemIdentifier;
 
 /**
  The text contents to index.
