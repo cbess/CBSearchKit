@@ -105,7 +105,7 @@ static NSString * gFTSEngineVersion = nil;
     
     __typeof__(self) __weak weakSelf = self;
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
-        NSString *query = [NSString stringWithFormat:@"CREATE VIRTUAL TABLE %@ USING %@ (item_id, contents, item_type, item_meta)",
+        NSString *query = [NSString stringWithFormat:@"CREATE VIRTUAL TABLE IF NOT EXISTS %@ USING %@ (item_id, contents, item_type, item_meta)",
                            weakSelf.indexName,
                            gFTSEngineVersion];
         BOOL success = [db executeUpdate:query];

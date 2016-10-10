@@ -14,7 +14,7 @@ extern NSString * _Nonnull const kCBSFTSEngineVersion3; // fts3
 extern NSString * _Nonnull const kCBSFTSEngineVersion4; // fts4
 
 typedef void(^CBSIndexerReindexCompletionHandler)(NSUInteger itemCount, NSError * _Nullable error);
-typedef void(^CBSIndexerItemsCompletionHandler)(NSArray * _Nonnull indexItems, NSError * _Nullable error);
+typedef void(^CBSIndexerItemsCompletionHandler)(NSArray<id<CBSIndexItem>> * _Nonnull indexItems, NSError * _Nullable error);
 
 @class FMDatabaseQueue;
 
