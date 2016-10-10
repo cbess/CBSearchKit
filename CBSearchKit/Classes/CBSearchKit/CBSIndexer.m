@@ -145,7 +145,7 @@ static NSString * gFTSEngineVersion = nil;
                 }
                 
                 if (![item canIndex]) {
-                    return;
+                    continue;
                 }
                 
                 @autoreleasepool {
