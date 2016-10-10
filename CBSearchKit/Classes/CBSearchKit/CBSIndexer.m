@@ -140,6 +140,7 @@ static NSString * gFTSEngineVersion = nil;
             for (id<CBSIndexItem> item in items) {
                 // check self, if released, bail
                 if (!weakSelf) {
+                    CBSError(@"Indexer released.");
                     *rollback = YES;
                     return;
                 }
