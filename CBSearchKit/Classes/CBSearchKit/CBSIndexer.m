@@ -286,7 +286,7 @@ static NSString * gFTSEngineVersion = nil;
     [[NSFileManager defaultManager] removeItemAtPath:self.databasePath error:&error];
     
     if (!error) {
-        _databaseQueue = nil;
+        self.databaseQueue = nil;
         _databaseCreated = NO;
         return YES;
     } else {
