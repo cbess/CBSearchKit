@@ -68,12 +68,24 @@ typedef void(^CBSIndexerItemsCompletionHandler)(NSArray<id<CBSIndexItem>> * _Non
 - (nonnull id<CBSIndexItem>)addTextContents:(nonnull NSString *)contents itemType:(CBSIndexItemType)itemType meta:(nullable NSDictionary *)meta completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
 - (nonnull id<CBSIndexItem>)addTextContents:(nonnull NSString *)contents itemType:(CBSIndexItemType)itemType completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
 - (nonnull id<CBSIndexItem>)addTextContents:(nonnull NSString *)contents completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
+
+/// Adds the specified CBSIndexItem to the receiver index.
+/// @param item The CBSIndexItem object to add to the index.
 - (void)addItem:(nonnull id<CBSIndexItem>)item completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
-- (void)addItems:(nonnull NSArray<id<CBSIndexItem>> *)items completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
+
+/// Adds the given CBSIndexItem objects to the receiver index.
+/// @param items The fast enumeration collection that contains the CBSIndexItem objects.
+- (void)addItems:(nonnull id<NSFastEnumeration>)items completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
 
 - (void)removeItemWithID:(nonnull CBSIndexItemIdentifier)identifier;
 - (void)removeItem:(nonnull id<CBSIndexItem>)item;
-- (void)removeItems:(nonnull NSArray<id<CBSIndexItem>> *)items completionHandler:(nullable dispatch_block_t)completionHandler;
+
+/// Removes the given CBSIndexItem objects from the receiever index.
+- (void)removeItems:(nonnull id<NSFastEnumeration>)items completionHandler:(nullable dispatch_block_t)completionHandler;
+
+/// Removes the entire index.
+/// @discussion Deletes the index file.
+- (BOOL)removeAllItems;
 
 /**
  Reindexes the entire database.

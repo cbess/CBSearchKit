@@ -124,7 +124,7 @@ static NSString * gFTSEngineVersion = nil;
     [self addItems:@[item] completionHandler:completionHandler];
 }
 
-- (void)addItems:(NSArray *)items completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler {
+- (void)addItems:(id<NSFastEnumeration>)items completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler {
     [self createDatabaseQueueIfNeeded];
     [self createFTSIfNeeded];
     
@@ -240,7 +240,7 @@ static NSString * gFTSEngineVersion = nil;
     [self removeItems:@[item] completionHandler:nil];
 }
 
-- (void)removeItems:(NSArray *)items completionHandler:(dispatch_block_t)completionHandler {
+- (void)removeItems:(id<NSFastEnumeration>)items completionHandler:(dispatch_block_t)completionHandler {
     __typeof__(self) __weak weakSelf = self;
     dispatch_async(_indexQueue, ^{
         [weakSelf.databaseQueue inDatabase:^(FMDatabase *db) {
@@ -269,6 +269,21 @@ static NSString * gFTSEngineVersion = nil;
     item.indexItemIdentifier = identifier;
     
     [self removeItem:item];
+}
+
+- (BOOL)removeAllItems {
+    NSError *error = nil;
+    [[NSFileManager defaultManager] removeItemAtPath:self.databasePath error:&error];
+    
+    if (!error) {
+        _databaseQueue = nil;
+        _databaseCreated = NO;
+        return YES;
+    } else {
+        CBSError(error);
+    }
+    
+    return NO;
 }
 
 - (void)reindexWithCompletionHandler:(CBSIndexerReindexCompletionHandler)completionHandler {
