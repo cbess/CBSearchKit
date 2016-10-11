@@ -35,7 +35,7 @@
     [self assertAsyncOperationTimeout];
     
     XCTAssertEqual(count, 1, @"bad index item count");
-    XCTAssertEqual([self.indexer indexCount], 1, @"wrong count");
+    XCTAssertEqual([self.indexer itemCount], 1, @"wrong count");
 }
 
 - (void)testOptimize {

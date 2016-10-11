@@ -24,7 +24,7 @@ typedef void(^CBSIndexerItemsCompletionHandler)(NSArray<id<CBSIndexItem>> * _Non
  Set the internal FTS engine used.
  
  @param version Use kCBSFTSEngineVersion* constant.
- @discussion Defaults to kCBSFTSEngineVersion3.
+ @discussion Defaults to kCBSFTSEngineVersion4.
  */
 + (void)setFTSEngineVersion:(nonnull NSString *)version;
 
@@ -65,10 +65,6 @@ typedef void(^CBSIndexerItemsCompletionHandler)(NSArray<id<CBSIndexItem>> * _Non
 
 #pragma mark - Indexing
 
-- (nonnull id<CBSIndexItem>)addTextContents:(nonnull NSString *)contents itemType:(CBSIndexItemType)itemType meta:(nullable NSDictionary *)meta completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
-- (nonnull id<CBSIndexItem>)addTextContents:(nonnull NSString *)contents itemType:(CBSIndexItemType)itemType completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
-- (nonnull id<CBSIndexItem>)addTextContents:(nonnull NSString *)contents completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
-
 /// Adds the specified CBSIndexItem to the receiver index.
 /// @param item The CBSIndexItem object to add to the index.
 - (void)addItem:(nonnull id<CBSIndexItem>)item completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
@@ -77,14 +73,24 @@ typedef void(^CBSIndexerItemsCompletionHandler)(NSArray<id<CBSIndexItem>> * _Non
 /// @param items The fast enumeration collection that contains the CBSIndexItem objects.
 - (void)addItems:(nonnull id<NSFastEnumeration>)items completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
 
+/// Updates the index entry for the specified item.
+/// @discussion Adds and removes the item.
+- (void)updateItem:(nonnull id<CBSIndexItem>)item completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
+
+/// Removes the item with the specified identifier from the index.
 - (void)removeItemWithID:(nonnull CBSIndexItemIdentifier)identifier;
+
+/// Removes the item from the index.
+/// @discussion The item must have a valid identifier.
 - (void)removeItem:(nonnull id<CBSIndexItem>)item;
 
 /// Removes the given CBSIndexItem objects from the receiever index.
+/// @discussion Each item must have a valid identifier.
 - (void)removeItems:(nonnull id<NSFastEnumeration>)items completionHandler:(nullable dispatch_block_t)completionHandler;
 
 /// Removes the entire index.
 /// @discussion Deletes the index file.
+/// @return YES if the index path is removed without error.
 - (BOOL)removeAllItems;
 
 /**
@@ -104,6 +110,11 @@ typedef void(^CBSIndexerItemsCompletionHandler)(NSArray<id<CBSIndexItem>> * _Non
  */
 - (void)optimizeIndexWithCompletionHandler:(nullable dispatch_block_t)completionHandler;
 
+// no docs, yet
+- (nonnull id<CBSIndexItem>)addTextContents:(nonnull NSString *)contents itemType:(CBSIndexItemType)itemType meta:(nullable NSDictionary *)meta completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
+- (nonnull id<CBSIndexItem>)addTextContents:(nonnull NSString *)contents itemType:(CBSIndexItemType)itemType completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
+- (nonnull id<CBSIndexItem>)addTextContents:(nonnull NSString *)contents completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
+
 #pragma mark - Misc
 
 /**
@@ -119,11 +130,11 @@ typedef void(^CBSIndexerItemsCompletionHandler)(NSArray<id<CBSIndexItem>> * _Non
 - (nonnull NSString *)indexName;
 
 /**
- The total number of index items in the database.
+ The total number of items in the database.
  
  @discussion Performs a COUNT query.
  */
-- (NSUInteger)indexCount;
+- (NSUInteger)itemCount;
 
 /**
  Used mostly for unit test or custom/special queries.

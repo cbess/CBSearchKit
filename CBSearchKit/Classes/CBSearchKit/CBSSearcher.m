@@ -90,13 +90,14 @@
             params[@"contents"] = textContents;
             
             NSMutableString *query = [[NSMutableString alloc] initWithFormat:
-                                      @"SELECT * FROM %@ WHERE %@ MATCH :contents",
-                                      weakSelf.indexName,
+                                      // change 'contents' column, change in 'CBSIndexer.m'
+                                      @"SELECT * FROM %@ WHERE contents MATCH :contents ",
                                       weakSelf.indexName];
+            
             // use the index item type if not ignored
             if (itemType != CBSIndexItemTypeIgnore) {
                 params[@"itemtype"] = @(itemType);
-                [query appendString:@"AND item_type = :itemtype"];
+                [query appendString:@" AND item_type = :itemtype "];
             }
             
             FMResultSet *result = [db executeQuery:query withParameterDictionary:params];

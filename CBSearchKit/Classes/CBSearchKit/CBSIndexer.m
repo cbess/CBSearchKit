@@ -32,7 +32,7 @@ static NSString * gFTSEngineVersion = nil;
 @implementation CBSIndexer
 
 + (void)initialize {
-    gFTSEngineVersion = kCBSFTSEngineVersion3;
+    gFTSEngineVersion = kCBSFTSEngineVersion4;
 }
 
 + (void)setFTSEngineVersion:(NSString *)version {
@@ -105,7 +105,8 @@ static NSString * gFTSEngineVersion = nil;
     
     __typeof__(self) __weak weakSelf = self;
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
-        NSString *query = [NSString stringWithFormat:@"CREATE VIRTUAL TABLE IF NOT EXISTS %@ USING %@ (item_id, contents, item_type, item_meta)",
+        NSString *query = [NSString stringWithFormat:
+                           @"CREATE VIRTUAL TABLE IF NOT EXISTS %@ USING %@ (item_id, contents, item_type, item_meta)",
                            weakSelf.indexName,
                            gFTSEngineVersion];
         BOOL success = [db executeUpdate:query];
@@ -236,20 +237,31 @@ static NSString * gFTSEngineVersion = nil;
     return [self addTextContents:contents itemType:CBSIndexItemTypeIgnore completionHandler:completionHandler];
 }
 
+- (void)updateItem:(id<CBSIndexItem>)item completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler {
+    __typeof__(self) __weak weakSelf = self;
+    [self removeItems:@[item] completionHandler:^{
+        // re-add item
+        [weakSelf addItem:item completionHandler:completionHandler];
+    }];
+}
+
 - (void)removeItem:(id<CBSIndexItem>)item {
     [self removeItems:@[item] completionHandler:nil];
 }
 
 - (void)removeItems:(id<NSFastEnumeration>)items completionHandler:(dispatch_block_t)completionHandler {
+    [self createDatabaseQueueIfNeeded];
+    
     __typeof__(self) __weak weakSelf = self;
     dispatch_async(_indexQueue, ^{
         [weakSelf.databaseQueue inDatabase:^(FMDatabase *db) {
             for (id<CBSIndexItem> item in items) {
                 NSAssert([item indexItemIdentifier], @"Unable to remove item. No item identifier.");
                 
-                [db executeUpdate:[NSString stringWithFormat:@"DELETE FROM %@ WHERE item_id = %@",
-                 weakSelf.indexName,
-                 [item indexItemIdentifier]]];
+                [db executeUpdate:[NSString stringWithFormat:
+                                   @"DELETE FROM %@ WHERE item_id = %@",
+                                   weakSelf.indexName,
+                                   [item indexItemIdentifier]]];
             }
         }];
         
@@ -262,8 +274,6 @@ static NSString * gFTSEngineVersion = nil;
 }
 
 - (void)removeItemWithID:(CBSIndexItemIdentifier)identifier {
-    [self createDatabaseQueueIfNeeded];
-    
     // create a temp obj
     CBSIndexDocument *item = [CBSIndexDocument new];
     item.indexItemIdentifier = identifier;
@@ -295,9 +305,10 @@ static NSString * gFTSEngineVersion = nil;
     dispatch_async(_indexQueue, ^{
         [weakSelf.databaseQueue inDatabase:^(FMDatabase *db) {
             // rebuild index structure
-            [db executeUpdate:[NSString stringWithFormat:@"INSERT INTO %@(%@) VALUES ('rebuild')",
-             weakSelf.indexName,
-             weakSelf.indexName]];
+            [db executeUpdate:[NSString stringWithFormat:
+                               @"INSERT INTO %@ (%@) VALUES ('rebuild')",
+                               weakSelf.indexName,
+                               weakSelf.indexName]];
             
             if ([db hadError]) {
                 error = [db lastError];
@@ -305,7 +316,7 @@ static NSString * gFTSEngineVersion = nil;
             }
         }];
         
-        itemCount = [weakSelf indexCount];
+        itemCount = [weakSelf itemCount];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             if (completionHandler) {
@@ -339,7 +350,7 @@ static NSString * gFTSEngineVersion = nil;
     });
 }
 
-- (NSUInteger)indexCount {
+- (NSUInteger)itemCount {
     __block NSUInteger count = 0;
     [self createDatabaseQueueIfNeeded];
     

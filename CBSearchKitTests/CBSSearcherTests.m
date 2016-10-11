@@ -49,7 +49,7 @@
 - (void)testSearch {
     NSArray *indexedDocuments = [self buildIndex];
     
-    XCTAssertEqual([self.indexer indexCount], indexedDocuments.count, @"Bad count");
+    XCTAssertEqual([self.indexer itemCount], indexedDocuments.count, @"Bad count");
     
     id<CBSIndexItem> oneDoc = indexedDocuments.firstObject;
     NSString * const searchText = @"*one*";
