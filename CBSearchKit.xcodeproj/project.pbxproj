@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		11B032AE93BDBD4BB59EA63B /* libPods-CBSearchKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8F00FF1F916F9129BF8ACB /* libPods-CBSearchKit.a */; };
+		1A0A5938204A7DD000198C3F /* CBSCustomIndexDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A0A5937204A7DD000198C3F /* CBSCustomIndexDocument.m */; };
 		92064FD2197B3B7800157F03 /* CBSIndexDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 92064FC9197B3B7800157F03 /* CBSIndexDocument.m */; };
 		92064FD3197B3B7800157F03 /* CBSIndexer.m in Sources */ = {isa = PBXBuildFile; fileRef = 92064FCB197B3B7800157F03 /* CBSIndexer.m */; };
 		92064FD4197B3B7800157F03 /* CBSSearcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 92064FCE197B3B7800157F03 /* CBSSearcher.m */; };
@@ -40,6 +41,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1A0A5936204A7DD000198C3F /* CBSCustomIndexDocument.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBSCustomIndexDocument.h; sourceTree = "<group>"; };
+		1A0A5937204A7DD000198C3F /* CBSCustomIndexDocument.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CBSCustomIndexDocument.m; sourceTree = "<group>"; };
 		206B95F418979039CA91C279 /* libPods-CBSearchKitTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CBSearchKitTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23E06AE6E35E1AF22D17D344 /* Pods-CBSearchKitTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CBSearchKitTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CBSearchKitTests/Pods-CBSearchKitTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7367EF1A7F1FDB6B3AC207FE /* Pods-CBSearchKit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CBSearchKit.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CBSearchKit/Pods-CBSearchKit.debug.xcconfig"; sourceTree = "<group>"; };
@@ -106,6 +109,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1A0A5939204A7DD900198C3F /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				1A0A5936204A7DD000198C3F /* CBSCustomIndexDocument.h */,
+				1A0A5937204A7DD000198C3F /* CBSCustomIndexDocument.m */,
+			);
+			name = Other;
+			sourceTree = "<group>";
+		};
 		92064FC7197B3B7800157F03 /* CBSearchKit */ = {
 			isa = PBXGroup;
 			children = (
@@ -199,6 +211,7 @@
 			children = (
 				921BAC7C18C39FDC0074F396 /* CBSIndexerTests.m */,
 				921BAC7E18C993D00074F396 /* CBSSearcherTests.m */,
+				1A0A5939204A7DD900198C3F /* Other */,
 				921BAC5318B9D43B0074F396 /* Supporting Files */,
 			);
 			path = CBSearchKitTests;
@@ -401,13 +414,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-CBSearchKitTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		9FF9CFC8B45EF852026A3D45 /* [CP] Copy Pods Resources */ = {
@@ -431,13 +447,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-CBSearchKit-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -461,6 +480,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				921BAC7D18C39FDC0074F396 /* CBSIndexerTests.m in Sources */,
+				1A0A5938204A7DD000198C3F /* CBSCustomIndexDocument.m in Sources */,
 				921BAC7418BEF72B0074F396 /* CBAsyncTestCase.m in Sources */,
 				921BAC7F18C993D00074F396 /* CBSSearcherTests.m in Sources */,
 			);
@@ -549,7 +569,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
@@ -586,7 +606,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				SDKROOT = macosx;
 			};
 			name = Release;

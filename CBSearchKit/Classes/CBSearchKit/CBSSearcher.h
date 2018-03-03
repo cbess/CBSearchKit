@@ -12,6 +12,9 @@
 typedef void(^CBSSearcherItemsCompletionHandler)(NSArray<id<CBSIndexItem>> * _Nonnull items, NSError * _Nullable error);
 typedef void(^CBSSearcherItemsEnumerationHandler)(id<CBSIndexItem> _Nonnull item, BOOL * _Nonnull stop);
 
+/// Returns a custom object that represents the specified item.
+typedef id _Nonnull (^CBSSearcherItemFactoryHandler)(id<CBSIndexItem> _Nonnull item);
+
 @class CBSIndexer;
 
 @interface CBSSearcher : NSObject
@@ -33,5 +36,11 @@ typedef void(^CBSSearcherItemsEnumerationHandler)(id<CBSIndexItem> _Nonnull item
 - (void)itemsWithText:(nonnull NSString *)textContents completionHandler:(nonnull CBSSearcherItemsCompletionHandler)completionHandler;
 - (void)enumerateItemsWithText:(nonnull NSString *)textContents itemType:(CBSIndexItemType)itemType enumerationHandler:(nonnull CBSSearcherItemsEnumerationHandler)enumerationHandler;
 - (void)enumerateItemsWithText:(nonnull NSString *)textContents enumerationHandler:(nonnull CBSSearcherItemsEnumerationHandler)enumerationHandler;
+
+/**
+ Sets the handler used to create item objects. It converts CBSIndexItem into custom objects.
+ @discussion This is used to create objects that are given passed to the search item handlers.
+ */
+- (void)setItemFactoryHandler:(nullable CBSSearcherItemFactoryHandler)handler;
 
 @end

@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "CBSearchKit"
-  s.version      = "0.2.3"
+  s.version      = "0.3.0"
   s.summary      = "Simple and flexible full text search for iOS and macOS. Using the sqlite3 FTS3/4 engine."
 
   # s.description  = <<-DESC
@@ -62,8 +62,8 @@ Pod::Spec.new do |s|
   # s.platform     = :ios, "5.0"
 
   #  When using multiple platforms
-  s.ios.deployment_target = "6.0"
-  s.osx.deployment_target = "10.7"
+  s.ios.deployment_target = "9.0"
+  s.osx.deployment_target = "10.10"
 
 
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -124,6 +124,6 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
-  s.dependency "FMDB", "2.6.2"
+  s.dependency "FMDB", "2.7.2"
 
 end

@@ -21,6 +21,7 @@
 @property (nonatomic, copy) NSString *indexName;
 @property (nonatomic, copy) CBSSearcherItemsEnumerationHandler enumerationHandler;
 @property (nonatomic, strong) FMDatabaseQueue *databaseQueue;
+@property (nonatomic, copy) CBSSearcherItemFactoryHandler itemFactoryBlock;
 
 @end
 
@@ -66,6 +67,10 @@
         _searcherQueue = dispatch_queue_create("com.cbess.cbssearcher", 0);
     }
     return self;
+}
+
+- (void)setItemFactoryHandler:(CBSSearcherItemFactoryHandler)handler {
+    self.itemFactoryBlock = handler;
 }
 
 #pragma mark - Misc
@@ -115,16 +120,22 @@
                     break;
                 }
                 
+                // build custom object from the item factory, if factory handler available
+                id<CBSIndexItem> indexItem = document;
+                if (weakSelf.itemFactoryBlock) {
+                    indexItem = weakSelf.itemFactoryBlock(document);
+                }
+                
                 // use the enumerator, if provided
                 if (weakSelf.enumerationHandler) {
                     BOOL stop = NO;
-                    weakSelf.enumerationHandler(document, &stop);
+                    weakSelf.enumerationHandler(indexItem, &stop);
                     
                     if (stop) {
                         break;
                     }
                 } else {
-                    [resultItems addObject:document];
+                    [resultItems addObject:indexItem];
                 }
             }
             [result close];
