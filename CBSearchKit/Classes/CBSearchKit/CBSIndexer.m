@@ -141,7 +141,11 @@ static NSString * gFTSEngineVersion = nil;
             for (id<CBSIndexItem> item in items) {
                 // check self, if released, bail
                 if (!weakSelf) {
-                    CBSError(@"Indexer released.");
+                    NSError *error = [NSError errorWithDomain:@"error.cbsindexer"
+                                                         code:0
+                                                     userInfo:@{NSLocalizedDescriptionKey: @"indexer released"}];
+                    CBSError(error);
+                    
                     *rollback = YES;
                     return;
                 }
