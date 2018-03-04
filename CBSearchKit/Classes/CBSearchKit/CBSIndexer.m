@@ -19,7 +19,6 @@ NSString * const kCBSFTSEngineVersion4 = @"fts4";
 static NSString * gFTSEngineVersion = nil;
 
 @interface CBSIndexer () {
-    dispatch_queue_t _indexQueue;
     BOOL _databaseCreated;
 }
 
@@ -130,7 +129,7 @@ static NSString * gFTSEngineVersion = nil;
     [self createFTSIfNeeded];
     
     __typeof__(self) __weak weakSelf = self;
-    dispatch_async(_indexQueue, ^{
+    dispatch_async(self.indexQueue, ^{
         NSMutableArray *indexedItems = [NSMutableArray array];
         __block NSError *error = nil;
         
@@ -257,7 +256,7 @@ static NSString * gFTSEngineVersion = nil;
     [self createDatabaseQueueIfNeeded];
     
     __typeof__(self) __weak weakSelf = self;
-    dispatch_async(_indexQueue, ^{
+    dispatch_async(self.indexQueue, ^{
         [weakSelf.databaseQueue inDatabase:^(FMDatabase *db) {
             for (id<CBSIndexItem> item in items) {
                 NSAssert([item indexItemIdentifier], @"Unable to remove item. No item identifier.");
@@ -306,7 +305,7 @@ static NSString * gFTSEngineVersion = nil;
     __block NSUInteger itemCount = 0;
     __block NSError *error = nil;
     __typeof__(self) __weak weakSelf = self;
-    dispatch_async(_indexQueue, ^{
+    dispatch_async(self.indexQueue, ^{
         [weakSelf.databaseQueue inDatabase:^(FMDatabase *db) {
             // rebuild index structure
             [db executeUpdate:[NSString stringWithFormat:
@@ -334,7 +333,7 @@ static NSString * gFTSEngineVersion = nil;
     [self createDatabaseQueueIfNeeded];
     
     __typeof__(self) __weak weakSelf = self;
-    dispatch_async(_indexQueue, ^{
+    dispatch_async(self.indexQueue, ^{
         [weakSelf.databaseQueue inDatabase:^(FMDatabase *db) {
             // optimize the internal structure of FTS table
             [db executeUpdate:[NSString stringWithFormat:@"INSERT INTO %@(%@) VALUES ('optimize')",

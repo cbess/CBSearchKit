@@ -20,6 +20,9 @@ typedef void(^CBSIndexerItemsCompletionHandler)(NSArray<id<CBSIndexItem>> * _Non
 
 @interface CBSIndexer : NSObject
 
+/// The GCD queue used for asynchronous indexer operations.
+@property (nonatomic, nonnull, strong) dispatch_queue_t indexQueue;
+
 /**
  Set the internal FTS engine used.
  
