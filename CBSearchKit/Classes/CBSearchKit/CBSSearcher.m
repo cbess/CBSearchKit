@@ -12,9 +12,7 @@
 #import <FMDB/FMDatabase.h>
 #import <FMDB/FMResultSet.h>
 
-@interface CBSSearcher () {
-    dispatch_queue_t _searcherQueue;
-}
+@interface CBSSearcher ()
 
 @property (nonatomic, strong) CBSIndexer *indexer;
 @property (nonatomic, copy) NSString *databasePath;
@@ -64,7 +62,7 @@
 - (id)init {
     self = [super init];
     if (self) {
-        _searcherQueue = dispatch_queue_create("com.cbess.cbssearcher", 0);
+        _searchQueue = dispatch_queue_create("com.cbess.cbssearcher", 0);
     }
     return self;
 }
@@ -87,7 +85,7 @@
     [self createDatabaseQueueIfNeeded];
     
     __typeof__(self) __weak weakSelf = self;
-    dispatch_async(_searcherQueue, ^{
+    dispatch_async(self.searchQueue, ^{
         __block NSError *error = nil;
         NSMutableArray *resultItems = [NSMutableArray arrayWithCapacity:MAX(limit, 10)];
         [weakSelf.databaseQueue inDatabase:^(FMDatabase *db) {

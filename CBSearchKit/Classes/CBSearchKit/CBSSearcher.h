@@ -19,6 +19,9 @@ typedef id _Nonnull (^CBSSearcherItemFactoryHandler)(id<CBSIndexItem> _Nonnull i
 
 @interface CBSSearcher : NSObject
 
+/// The GCD queue used for asynchronous search operations.
+@property (nonatomic, nonnull, strong) dispatch_queue_t searchQueue;
+
 - (nonnull)initWithIndexer:(nonnull CBSIndexer *)indexer;
 - (nonnull)initWithDatabaseAtPath:(nullable NSString *)dbPath indexName:(nonnull NSString *)indexName;
 - (nonnull)initWithDatabaseAtPath:(nullable NSString *)dbPath;
