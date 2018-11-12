@@ -52,10 +52,10 @@ extern NSInteger const CBSIndexItemTypeIgnore;
  */
 - (nullable NSDictionary *)indexMeta;
 
-/// Invoked before the document is indexed.
+/// Invoked before the document is indexed. Called on background thread.
 - (void)willIndex;
 
-/// Invoked after the document has been indexed.
+/// Invoked after the document has been indexed. Called on background thread.
 /// This will not be called if indexing for this document fails to complete.
 - (void)didIndex;
 
