@@ -18,13 +18,12 @@ NSString * const kCBSFTSEngineVersion4 = @"fts4";
 
 static NSString * gFTSEngineVersion = nil;
 
-@interface CBSIndexer () {
-    BOOL _databaseCreated;
-}
+@interface CBSIndexer ()
 
 @property (nonatomic, copy) NSString *databasePath;
 @property (nonatomic, strong) FMDatabaseQueue *databaseQueue;
 @property (nonatomic, copy) NSString *indexName;
+@property (nonatomic, assign) BOOL databaseCreated;
 
 @end
 
@@ -99,7 +98,7 @@ static NSString * gFTSEngineVersion = nil;
 }
 
 - (void)createFTSIfNeeded {
-    if (_databaseCreated)
+    if (self.databaseCreated)
         return;
     
     __typeof__(self) __weak weakSelf = self;
@@ -114,7 +113,7 @@ static NSString * gFTSEngineVersion = nil;
             CBSError([db lastError]);
         }
         
-        _databaseCreated = success;
+        weakSelf.databaseCreated = success;
     }];
 }
 
@@ -271,7 +270,7 @@ static NSString * gFTSEngineVersion = nil;
                 NSAssert([item indexItemIdentifier], @"Unable to remove item. No item identifier.");
                 
                 [db executeUpdate:[NSString stringWithFormat:
-                                   @"DELETE FROM %@ WHERE item_id = '%@'",
+                                   @"DELETE FROM %@ WHERE item_id MATCH '%@'",
                                    weakSelf.indexName,
                                    [item indexItemIdentifier]]];
                 
@@ -304,7 +303,7 @@ static NSString * gFTSEngineVersion = nil;
     
     if (!error) {
         self.databaseQueue = nil;
-        _databaseCreated = NO;
+        self.databaseCreated = NO;
         return YES;
     } else {
         CBSError(error);

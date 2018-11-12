@@ -124,6 +124,7 @@
     }];
     [self waitForExpectationsWithTimeout:1 handler:nil];
     
+    // search for the updated item
     expectation = [self expectationWithDescription:@"search again"];
     [searcher itemsWithText:@"gloria" itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *items, NSError *error) {
         id<CBSIndexItem> item = items.firstObject;
