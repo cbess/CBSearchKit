@@ -103,6 +103,16 @@
                 [query appendString:@" AND item_type = :itemtype "];
             }
             
+            // add limit info
+            if (limit > 0) {
+                [query appendFormat:@" LIMIT %lu ", limit];
+            }
+            
+            // add offset info
+            if (offset > 0) {
+                [query appendFormat:@" OFFSET %lu ", offset];
+            }
+            
             FMResultSet *result = [db executeQuery:query withParameterDictionary:params];
             while ([result next]) {
                 CBSIndexDocument *document = [CBSIndexDocument new];

@@ -40,6 +40,9 @@
     
     XCTestExpectation *expectation = [self expectationWithDescription:@"build index"];
     [self.indexer addItems:documents completionHandler:^(NSArray *indexItems, NSError *error) {
+        XCTAssertNil(error, @"unable to build the index");
+        XCTAssertEqual(indexItems.count, documents.count, @"wrong count indexed");
+        
         [expectation fulfill];
     }];
     
@@ -89,6 +92,7 @@
     
     XCTestExpectation *expectation = [self expectationWithDescription:@"index"];
     [self.indexer addItems:@[document, document2] completionHandler:^(NSArray<id<CBSIndexItem>> * _Nonnull indexItems, NSError * _Nullable error) {
+        XCTAssertNil(error);
         XCTAssertEqual(indexItems.count, 2, @"did not index items");
         
         [expectation fulfill];
@@ -99,7 +103,9 @@
     expectation = [self expectationWithDescription:@"search originals"];
     CBSSearcher *searcher = [[CBSSearcher alloc] initWithIndexer:self.indexer];
     [searcher itemsWithText:@"here" itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *items, NSError *error) {
+        XCTAssertNil(error);
         XCTAssertEqual(items.count, 1, @"found no items");
+        
         [expectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:1 handler:nil];
@@ -119,7 +125,9 @@
     expectation = [self expectationWithDescription:@"search for removed"];
     searcher = [[CBSSearcher alloc] initWithIndexer:self.indexer];
     [searcher itemsWithText:@"uno" itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *items, NSError *error) {
+        XCTAssertNil(error);
         XCTAssertEqual(items.count, 0, @"should find no items");
+        
         [expectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:1 handler:nil];
@@ -146,7 +154,7 @@
     id<CBSIndexItem> oneDoc = indexedDocuments.firstObject;
     static NSString * const searchText = @"*one*";
     
-    XCTestExpectation *expectation = [self expectationWithDescription:@"build index"];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"search custom index"];
     
     CBSSearcher *searcher = [[CBSSearcher alloc] initWithIndexer:self.indexer];
     
@@ -176,6 +184,22 @@
     }];
     
     [self waitForExpectationsWithTimeout:7 handler:nil];
+}
+
+- (void)testSearchLimit {
+    NSArray *docs = [self buildIndex];
+    
+    XCTAssertTrue(docs.count > 2, @"not enough documents indexed");
+    
+    XCTestExpectation *expectation = [self expectationWithDescription:@"search index"];
+    CBSSearcher *searcher = [[CBSSearcher alloc] initWithIndexer:self.indexer];
+    [searcher itemsWithText:@"is" itemType:CBSIndexItemTypeIgnore offset:0 limit:2 completionHandler:^(NSArray<id<CBSIndexItem>> * _Nonnull items, NSError * _Nullable error) {
+        XCTAssertNil(error, @"error occurred: %@", error);
+        XCTAssertEqual(items.count, 2, @"wrong result count");
+        
+        [expectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:1 handler:nil];
 }
 
 @end
