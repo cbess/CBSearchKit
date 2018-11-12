@@ -34,4 +34,12 @@ NSInteger const CBSIndexItemTypeIgnore = -1;
     return YES;
 }
 
+- (void)willIndex {
+    // empty
+}
+
+- (void)didIndex {
+    // empty
+}
+
 @end

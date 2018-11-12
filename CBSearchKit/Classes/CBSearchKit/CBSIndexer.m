@@ -154,6 +154,8 @@ static NSString * gFTSEngineVersion = nil;
                 }
                 
                 @autoreleasepool {
+                    [item willIndex];
+                    
                     NSMutableArray *queryColumns = [NSMutableArray array];
                     NSMutableArray *queryParamNames = [NSMutableArray array];
                     
@@ -209,6 +211,7 @@ static NSString * gFTSEngineVersion = nil;
                     }
                     
                     [indexedItems addObject:item];
+                    [item didIndex];
                 }
             }
         }];

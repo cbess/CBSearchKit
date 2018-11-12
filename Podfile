@@ -2,7 +2,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :osx, '10.10'
 
 def common_pods
-    pod 'FMDB', '~> 2.7.2'
+    pod 'FMDB', '~> 2.7.5'
 end
 
 target 'CBSearchKit' do

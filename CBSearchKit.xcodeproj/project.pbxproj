@@ -24,7 +24,6 @@
 		921BAC4F18B9D43B0074F396 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 921BAC2E18B9D43B0074F396 /* Cocoa.framework */; };
 		921BAC5718B9D43B0074F396 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 921BAC5518B9D43B0074F396 /* InfoPlist.strings */; };
 		921BAC6318B9D44F0074F396 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 921BAC6218B9D44F0074F396 /* libsqlite3.dylib */; };
-		921BAC7418BEF72B0074F396 /* CBAsyncTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 921BAC7218BEF6F70074F396 /* CBAsyncTestCase.m */; };
 		921BAC7D18C39FDC0074F396 /* CBSIndexerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 921BAC7C18C39FDC0074F396 /* CBSIndexerTests.m */; };
 		921BAC7F18C993D00074F396 /* CBSSearcherTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 921BAC7E18C993D00074F396 /* CBSSearcherTests.m */; };
 		C8AFCDCFC3FA40E276BA618C /* libPods-CBSearchKitTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 206B95F418979039CA91C279 /* libPods-CBSearchKitTests.a */; };
@@ -76,8 +75,6 @@
 		921BAC5418B9D43B0074F396 /* CBSearchKitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CBSearchKitTests-Info.plist"; sourceTree = "<group>"; };
 		921BAC5618B9D43B0074F396 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		921BAC6218B9D44F0074F396 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		921BAC7118BEF6F70074F396 /* CBAsyncTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBAsyncTestCase.h; sourceTree = "<group>"; };
-		921BAC7218BEF6F70074F396 /* CBAsyncTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBAsyncTestCase.m; sourceTree = "<group>"; };
 		921BAC7C18C39FDC0074F396 /* CBSIndexerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBSIndexerTests.m; sourceTree = "<group>"; };
 		921BAC7E18C993D00074F396 /* CBSSearcherTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBSSearcherTests.m; sourceTree = "<group>"; };
 		921BAC8018CA93230074F396 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
@@ -237,18 +234,8 @@
 		921BAC6F18BEF6F70074F396 /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
-				921BAC7018BEF6F70074F396 /* CBAsyncTestCase */,
 			);
 			path = Vendors;
-			sourceTree = "<group>";
-		};
-		921BAC7018BEF6F70074F396 /* CBAsyncTestCase */ = {
-			isa = PBXGroup;
-			children = (
-				921BAC7118BEF6F70074F396 /* CBAsyncTestCase.h */,
-				921BAC7218BEF6F70074F396 /* CBAsyncTestCase.m */,
-			);
-			path = CBAsyncTestCase;
 			sourceTree = "<group>";
 		};
 		DBF5E4CE1CD8A81C71AD904B /* Pods */ = {
@@ -273,8 +260,6 @@
 				921BAC2718B9D43B0074F396 /* Sources */,
 				921BAC2818B9D43B0074F396 /* Frameworks */,
 				921BAC2918B9D43B0074F396 /* Resources */,
-				4CA70E05DF233BF965E451A8 /* [CP] Embed Pods Frameworks */,
-				53621B8593A5D02397C66A4E /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -293,8 +278,6 @@
 				921BAC4818B9D43B0074F396 /* Sources */,
 				921BAC4918B9D43B0074F396 /* Frameworks */,
 				921BAC4A18B9D43B0074F396 /* Resources */,
-				3A41403287E07FD4803B7BB4 /* [CP] Embed Pods Frameworks */,
-				9FF9CFC8B45EF852026A3D45 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -363,51 +346,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		3A41403287E07FD4803B7BB4 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CBSearchKitTests/Pods-CBSearchKitTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		4CA70E05DF233BF965E451A8 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CBSearchKit/Pods-CBSearchKit-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		53621B8593A5D02397C66A4E /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CBSearchKit/Pods-CBSearchKit-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		6AA23F95B7324F3C55297E57 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -424,21 +362,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		9FF9CFC8B45EF852026A3D45 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CBSearchKitTests/Pods-CBSearchKitTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		E6C126AB13FFB7B8F432CB40 /* [CP] Check Pods Manifest.lock */ = {
@@ -481,7 +404,6 @@
 			files = (
 				921BAC7D18C39FDC0074F396 /* CBSIndexerTests.m in Sources */,
 				1A0A5938204A7DD000198C3F /* CBSCustomIndexDocument.m in Sources */,
-				921BAC7418BEF72B0074F396 /* CBAsyncTestCase.m in Sources */,
 				921BAC7F18C993D00074F396 /* CBSSearcherTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

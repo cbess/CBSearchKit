@@ -52,6 +52,13 @@ extern NSInteger const CBSIndexItemTypeIgnore;
  */
 - (nullable NSDictionary *)indexMeta;
 
+/// Invoked before the document is indexed.
+- (void)willIndex;
+
+/// Invoked after the document has been indexed.
+/// This will not be called if indexing for this document fails to complete.
+- (void)didIndex;
+
 @end
 
 
