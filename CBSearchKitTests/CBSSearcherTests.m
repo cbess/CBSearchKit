@@ -59,7 +59,7 @@
     id<CBSIndexItem> oneDoc = indexedDocuments.firstObject;
     static NSString * const searchText = @"*one*";
     
-    XCTestExpectation *expectation = [self expectationWithDescription:@"build index"];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"search index"];
     
     CBSSearcher *searcher = [[CBSSearcher alloc] initWithIndexer:self.indexer];
     [searcher itemsWithText:searchText itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *items, NSError *error) {
@@ -84,11 +84,11 @@
     
     CBSIndexDocument *document = [CBSIndexDocument new];
     document.indexItemIdentifier = @"one";
-    document.indexTextContents = @"uno Dios";
+    document.indexTextContents = @"uno Dios"; // one God
     
     CBSIndexDocument *document2 = [CBSIndexDocument new];
     document2.indexItemIdentifier = @"two";
-    document2.indexTextContents = @"er here";
+    document2.indexTextContents = @"一王人"; // one King
     
     XCTestExpectation *expectation = [self expectationWithDescription:@"index"];
     [self.indexer addItems:@[document, document2] completionHandler:^(NSArray<id<CBSIndexItem>> * _Nonnull indexItems, NSError * _Nullable error) {
@@ -102,7 +102,7 @@
     // search for initial items
     expectation = [self expectationWithDescription:@"search originals"];
     CBSSearcher *searcher = [[CBSSearcher alloc] initWithIndexer:self.indexer];
-    [searcher itemsWithText:@"here" itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *items, NSError *error) {
+    [searcher itemsWithText:@"uno" itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *items, NSError *error) {
         XCTAssertNil(error);
         XCTAssertEqual(items.count, 1, @"found no items");
         
