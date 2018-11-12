@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "CBSearchKit"
-  s.version      = "0.3.1"
+  s.version      = "0.4.1"
   s.summary      = "Simple and flexible full text search for iOS and macOS. Using the sqlite3 FTS3/4 engine."
   s.homepage     = "https://github.com/cbess/CBSearchKit"
   s.license      = "MIT"

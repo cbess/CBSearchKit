@@ -28,6 +28,8 @@
     
     __block NSInteger count = 0;
     [self.indexer addTextContents:text itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *indexItems, NSError *error) {
+        XCTAssertNil(error);
+        
         count = indexItems.count;
         [expectation fulfill];
     }];
@@ -43,7 +45,9 @@
     
     __typeof__(self) __weak weakSelf = self;
     [self.indexer addTextContents:@"test" completionHandler:^(NSArray *indexItems, NSError *error) {
-        [weakSelf.indexer optimizeIndexWithCompletionHandler:^{
+        [weakSelf.indexer optimizeIndexWithCompletionHandler:^(NSError * _Nullable error) {
+            XCTAssertNil(error);
+            
             [expectation fulfill];
         }];
     }];
@@ -60,7 +64,11 @@
     __typeof__(self) __weak weakSelf = self;
     __block NSUInteger count = 0;
     [self.indexer addItems:documents completionHandler:^(NSArray *indexItems, NSError *error) {
+        XCTAssertNil(error);
+        
         [weakSelf.indexer reindexWithCompletionHandler:^(NSUInteger itemCount, NSError *error) {
+            XCTAssertNil(error);
+            
             count = itemCount;
             [expectation fulfill];
         }];

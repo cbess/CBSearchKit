@@ -245,7 +245,12 @@ static NSString * gFTSEngineVersion = nil;
 
 - (void)updateItem:(id<CBSIndexItem>)item completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler {
     __typeof__(self) __weak weakSelf = self;
-    [self removeItems:@[item] completionHandler:^{
+    [self removeItems:@[item] completionHandler:^(NSError * _Nullable error) {
+        if (error && completionHandler) {
+            completionHandler(@[], error);
+            return;
+        }
+        
         // re-add item
         [weakSelf addItem:item completionHandler:completionHandler];
     }];
@@ -255,9 +260,10 @@ static NSString * gFTSEngineVersion = nil;
     [self removeItems:@[item] completionHandler:nil];
 }
 
-- (void)removeItems:(id<NSFastEnumeration>)items completionHandler:(dispatch_block_t)completionHandler {
+- (void)removeItems:(id<NSFastEnumeration>)items completionHandler:(CBSIndexerCompletionHandler)completionHandler {
     [self createDatabaseQueueIfNeeded];
     
+    __block NSError *error = nil;
     __typeof__(self) __weak weakSelf = self;
     dispatch_async(self.indexQueue, ^{
         [weakSelf.databaseQueue inDatabase:^(FMDatabase *db) {
@@ -265,15 +271,20 @@ static NSString * gFTSEngineVersion = nil;
                 NSAssert([item indexItemIdentifier], @"Unable to remove item. No item identifier.");
                 
                 [db executeUpdate:[NSString stringWithFormat:
-                                   @"DELETE FROM %@ WHERE item_id = %@",
+                                   @"DELETE FROM %@ WHERE item_id = '%@'",
                                    weakSelf.indexName,
                                    [item indexItemIdentifier]]];
+                
+                if ([db hadError]) {
+                    error = [db lastError];
+                    CBSError(error);
+                }
             }
         }];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             if (completionHandler) {
-                completionHandler();
+                completionHandler(error);
             }
         });
     });
@@ -332,9 +343,10 @@ static NSString * gFTSEngineVersion = nil;
     });
 }
 
-- (void)optimizeIndexWithCompletionHandler:(dispatch_block_t)completionHandler {
+- (void)optimizeIndexWithCompletionHandler:(CBSIndexerCompletionHandler)completionHandler {
     [self createDatabaseQueueIfNeeded];
     
+    __block NSError *error = nil;
     __typeof__(self) __weak weakSelf = self;
     dispatch_async(self.indexQueue, ^{
         [weakSelf.databaseQueue inDatabase:^(FMDatabase *db) {
@@ -344,13 +356,14 @@ static NSString * gFTSEngineVersion = nil;
              weakSelf.indexName]];
             
             if ([db hadError]) {
-                CBSError([db lastError]);
+                error = [db lastError];
+                CBSError(error);
             }
         }];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             if (completionHandler) {
-                completionHandler();
+                completionHandler(error);
             }
         });
     });

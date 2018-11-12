@@ -15,6 +15,7 @@ extern NSString * _Nonnull const kCBSFTSEngineVersion4; // fts4
 
 typedef void(^CBSIndexerReindexCompletionHandler)(NSUInteger itemCount, NSError * _Nullable error);
 typedef void(^CBSIndexerItemsCompletionHandler)(NSArray<id<CBSIndexItem>> * _Nonnull indexItems, NSError * _Nullable error);
+typedef void(^CBSIndexerCompletionHandler)(NSError * _Nullable error);
 
 @class FMDatabaseQueue;
 
@@ -89,7 +90,7 @@ typedef void(^CBSIndexerItemsCompletionHandler)(NSArray<id<CBSIndexItem>> * _Non
 
 /// Removes the given CBSIndexItem objects from the receiever index.
 /// @discussion Each item must have a valid identifier.
-- (void)removeItems:(nonnull id<NSFastEnumeration>)items completionHandler:(nullable dispatch_block_t)completionHandler;
+- (void)removeItems:(nonnull id<NSFastEnumeration>)items completionHandler:(nullable CBSIndexerCompletionHandler)completionHandler;
 
 /// Removes the entire index.
 /// @discussion Deletes the index file.
@@ -111,7 +112,7 @@ typedef void(^CBSIndexerItemsCompletionHandler)(NSArray<id<CBSIndexItem>> * _Non
  @discussion Asynchronous operation.
  @see http://www.sqlite.org/fts3.html#*fts4optcmd
  */
-- (void)optimizeIndexWithCompletionHandler:(nullable dispatch_block_t)completionHandler;
+- (void)optimizeIndexWithCompletionHandler:(nullable CBSIndexerCompletionHandler)completionHandler;
 
 // no docs, yet
 - (nonnull id<CBSIndexItem>)addTextContents:(nonnull NSString *)contents itemType:(CBSIndexItemType)itemType meta:(nullable NSDictionary *)meta completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;

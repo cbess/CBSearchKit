@@ -76,6 +76,67 @@
     [self waitForExpectationsWithTimeout:7 handler:nil];
 }
 
+- (void)testUpdateItem {
+    [self buildIndex];
+    
+    CBSIndexDocument *document = [CBSIndexDocument new];
+    document.indexItemIdentifier = @"one";
+    document.indexTextContents = @"uno Dios";
+    
+    CBSIndexDocument *document2 = [CBSIndexDocument new];
+    document2.indexItemIdentifier = @"two";
+    document2.indexTextContents = @"er here";
+    
+    XCTestExpectation *expectation = [self expectationWithDescription:@"index"];
+    [self.indexer addItems:@[document, document2] completionHandler:^(NSArray<id<CBSIndexItem>> * _Nonnull indexItems, NSError * _Nullable error) {
+        XCTAssertEqual(indexItems.count, 2, @"did not index items");
+        
+        [expectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+
+    // search for initial items
+    expectation = [self expectationWithDescription:@"search originals"];
+    CBSSearcher *searcher = [[CBSSearcher alloc] initWithIndexer:self.indexer];
+    [searcher itemsWithText:@"here" itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *items, NSError *error) {
+        XCTAssertEqual(items.count, 1, @"found no items");
+        [expectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+    
+    // update item
+    expectation = [self expectationWithDescription:@"update"];
+    document.indexTextContents = @"soli Deo gloria";
+    [self.indexer updateItem:document completionHandler:^(NSArray<id<CBSIndexItem>> * _Nonnull indexItems, NSError * _Nullable error) {
+        XCTAssertEqual(indexItems.count, 1, @"did not update the one item");
+        XCTAssertNil(error);
+        
+        [expectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+    
+    // search for the updated items
+    expectation = [self expectationWithDescription:@"search for removed"];
+    searcher = [[CBSSearcher alloc] initWithIndexer:self.indexer];
+    [searcher itemsWithText:@"uno" itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *items, NSError *error) {
+        XCTAssertEqual(items.count, 0, @"should find no items");
+        [expectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+    
+    expectation = [self expectationWithDescription:@"search again"];
+    [searcher itemsWithText:@"gloria" itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *items, NSError *error) {
+        id<CBSIndexItem> item = items.firstObject;
+        
+        XCTAssertEqual(items.count, 1, @"no items found");
+        XCTAssertNil(error);
+        XCTAssertEqualObjects(item.indexTextContents, @"soli Deo gloria");
+        
+        [expectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
 - (void)testSearchWithCustomIndexItem {
     NSArray *indexedDocuments = [self buildIndex];
     
