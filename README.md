@@ -74,6 +74,6 @@ pod 'CBSearchKit', :git => 'https://github.com/cbess/CBSearchKit.git', :tag => '
 }
 ```
 
-See unit tests for more examples.
+See [unit tests](CBSearchKitTests) for more examples.
 
-[Soli Deo Gloria](perfectGod.com)
+[Soli Deo Gloria](http://perfectGod.com)
