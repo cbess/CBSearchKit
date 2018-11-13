@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "CBSearchKit"
-  s.version      = "0.5.0"
+  s.version      = "0.5.1"
   s.summary      = "Simple and flexible full text search for iOS and macOS. Using the sqlite3 FTS3/4 engine."
   s.homepage     = "https://github.com/cbess/CBSearchKit"
   s.license      = "MIT"
@@ -22,9 +22,11 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/cbess/CBSearchKit.git", :tag => "v#{s.version}"}
 
   s.source_files  = "CBSearchKit/Classes/CBSearchKit/*.{h,m}"
-  s.library   = "sqlite3"
   s.requires_arc = true
 
   s.dependency "FMDB", "2.7.5"
+  s.dependency "sqlite3", "3.25.3"
+  s.dependency "sqlite3/fts"
+  s.dependency "sqlite3/fts5"
 
 end

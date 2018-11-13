@@ -15,6 +15,7 @@
 NSString * const kCBSDefaultIndexName = @"cbs_fts";
 NSString * const kCBSFTSEngineVersion3 = @"fts3";
 NSString * const kCBSFTSEngineVersion4 = @"fts4";
+NSString * const kCBSFTSEngineVersion5 = @"fts5";
 
 static NSString * gFTSEngineVersion = nil;
 
