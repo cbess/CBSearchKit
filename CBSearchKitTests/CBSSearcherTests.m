@@ -62,6 +62,7 @@
     XCTestExpectation *expectation = [self expectationWithDescription:@"search index"];
     
     CBSSearcher *searcher = [[CBSSearcher alloc] initWithIndexer:self.indexer];
+    searcher.orderType = CBSSearcherOrderTypeRelevance;
     [searcher itemsWithText:searchText itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *items, NSError *error) {
         XCTAssertEqual(items.count, 1, @"Should be only one item");
         XCTAssertNil(error, @"Error: %@", error);
