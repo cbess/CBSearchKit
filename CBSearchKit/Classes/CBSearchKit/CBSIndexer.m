@@ -10,6 +10,7 @@
 #import <FMDB/FMDatabase.h>
 #import <FMDB/FMDatabaseQueue.h>
 #import <FMDB/FMResultSet.h>
+#import "sqlite3_rank_func.h"
 #import "CBSMacros.h"
 
 NSString * const kCBSDefaultIndexName = @"cbs_fts";
@@ -19,7 +20,9 @@ NSString * const kCBSFTSEngineVersion5 = @"fts5";
 
 static NSString * gFTSEngineVersion = nil;
 
-@interface CBSIndexer ()
+@interface CBSIndexer () {
+    BOOL _supportsRanking;
+}
 
 @property (nonatomic, copy) NSString *databasePath;
 @property (nonatomic, strong) FMDatabaseQueue *databaseQueue;
@@ -44,6 +47,10 @@ static NSString * gFTSEngineVersion = nil;
     
     NSString *path = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
     return [path stringByAppendingPathComponent:pathComp];
+}
+
++ (id)indexer {
+    return [[self alloc] initWithDatabaseNamed:nil];
 }
 
 #pragma mark - Init
@@ -86,6 +93,10 @@ static NSString * gFTSEngineVersion = nil;
     return self;
 }
 
+- (BOOL)supportsRanking {
+    return _supportsRanking;
+}
+
 #pragma mark - Misc
 
 - (void)createDatabaseQueueIfNeeded {
@@ -102,11 +113,10 @@ static NSString * gFTSEngineVersion = nil;
     if (self.databaseCreated)
         return;
     
-    __typeof__(self) __weak weakSelf = self;
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
         NSString *query = [NSString stringWithFormat:
                            @"CREATE VIRTUAL TABLE IF NOT EXISTS %@ USING %@ (item_id, contents, item_type, item_meta)",
-                           weakSelf.indexName,
+                           self.indexName,
                            gFTSEngineVersion];
         BOOL success = [db executeUpdate:query];
         
@@ -114,7 +124,16 @@ static NSString * gFTSEngineVersion = nil;
             CBSError([db lastError]);
         }
         
-        weakSelf.databaseCreated = success;
+        self.databaseCreated = success;
+        
+        if (success) {
+            // setup the rank function
+            sqlite3 *sqlDb = db.sqliteHandle;
+            int result = sqlite3_create_function(sqlDb, "rank", -1, SQLITE_ANY, NULL, rankfunc, NULL, NULL);
+            if (result == 0) {
+                self->_supportsRanking = YES;
+            }
+        }
     }];
 }
 
@@ -373,9 +392,8 @@ static NSString * gFTSEngineVersion = nil;
     __block NSUInteger count = 0;
     [self createDatabaseQueueIfNeeded];
     
-    __typeof__(self) __weak weakSelf = self;
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
-        FMResultSet *result = [db executeQuery:[@"SELECT COUNT(rowid) FROM " stringByAppendingString:weakSelf.indexName]];
+        FMResultSet *result = [db executeQuery:[@"SELECT COUNT(rowid) FROM " stringByAppendingString:self.indexName]];
         if ([result next]) {
             count = (NSUInteger) [result unsignedLongLongIntForColumnIndex:0];
         }

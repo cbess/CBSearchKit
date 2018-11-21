@@ -15,6 +15,13 @@ typedef void(^CBSSearcherItemsEnumerationHandler)(id<CBSIndexItem> _Nonnull item
 /// Returns a custom object that represents the specified item.
 typedef id _Nonnull (^CBSSearcherItemFactoryHandler)(id<CBSIndexItem> _Nonnull item);
 
+typedef NS_ENUM(NSInteger, CBSSearcherOrderType) {
+    /// Ordered naturally (default)
+    CBSSearcherOrderTypeDefault,
+    /// Ordered from most to least relevant
+    CBSSearcherOrderTypeRelevance
+};
+
 @class CBSIndexer;
 
 /// Represents a searcher that searches a `CBSIndexer` reference.
@@ -26,16 +33,19 @@ typedef id _Nonnull (^CBSSearcherItemFactoryHandler)(id<CBSIndexItem> _Nonnull i
 /// The indexer used internally for this searcher.
 @property (nonatomic, nonnull, readonly) CBSIndexer *indexer;
 
+/// The searcher results order type. Defaults to `CBSSearcherOrderTypeDefault`.
+@property (nonatomic, assign) CBSSearcherOrderType orderType;
+
 /// Initializes the searcher with the specified indexer.
-- (nonnull)initWithIndexer:(nonnull CBSIndexer *)indexer;
+- (nonnull instancetype)initWithIndexer:(nonnull CBSIndexer *)indexer;
 
 /// Initializes the searcher with the indexer at the specified path with the name.
-- (nonnull)initWithDatabaseAtPath:(nullable NSString *)dbPath indexName:(nonnull NSString *)indexName;
-- (nonnull)initWithDatabaseAtPath:(nullable NSString *)dbPath;
+- (nonnull instancetype)initWithDatabaseAtPath:(nullable NSString *)dbPath indexName:(nonnull NSString *)indexName;
+- (nonnull instancetype)initWithDatabaseAtPath:(nullable NSString *)dbPath;
 
 /// Initializes the searcher with an indexer with the specified `dbName` in cache with the indexe name.
-- (nonnull)initWithDatabaseNamed:(nullable NSString *)dbName indexName:(nonnull NSString *)indexName;
-- (nonnull)initWithDatabaseNamed:(nullable NSString *)dbName;
+- (nonnull instancetype)initWithDatabaseNamed:(nullable NSString *)dbName indexName:(nonnull NSString *)indexName;
+- (nonnull instancetype)initWithDatabaseNamed:(nullable NSString *)dbName;
 
 /**
  Searches the index for documents with the specified text in the contents.
@@ -46,8 +56,8 @@ typedef id _Nonnull (^CBSSearcherItemFactoryHandler)(id<CBSIndexItem> _Nonnull i
  */
 - (void)itemsWithText:(nonnull NSString *)textContents
              itemType:(CBSIndexItemType)itemType
-               offset:(NSInteger)offset
-                limit:(NSInteger)limit
+               offset:(NSUInteger)offset
+                limit:(NSUInteger)limit
     completionHandler:(nullable CBSSearcherItemsCompletionHandler)completionHandler;
 - (void)itemsWithText:(nonnull NSString *)textContents itemType:(CBSIndexItemType)itemType completionHandler:(nonnull CBSSearcherItemsCompletionHandler)completionHandler;
 - (void)itemsWithText:(nonnull NSString *)textContents completionHandler:(nonnull CBSSearcherItemsCompletionHandler)completionHandler;

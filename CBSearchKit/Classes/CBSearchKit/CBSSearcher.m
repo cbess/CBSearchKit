@@ -62,6 +62,7 @@
 - (id)init {
     self = [super init];
     if (self) {
+        _orderType = CBSSearcherOrderTypeDefault;
         _searchQueue = dispatch_queue_create("com.cbess.cbssearcher", 0);
     }
     return self;
@@ -81,7 +82,7 @@
 
 #pragma mark - Searcher
 
-- (void)itemsWithText:(NSString *)textContents itemType:(CBSIndexItemType)itemType offset:(NSInteger)offset limit:(NSInteger)limit completionHandler:(CBSSearcherItemsCompletionHandler)completionHandler {
+- (void)itemsWithText:(NSString *)textContents itemType:(CBSIndexItemType)itemType offset:(NSUInteger)offset limit:(NSUInteger)limit completionHandler:(CBSSearcherItemsCompletionHandler)completionHandler {
     [self createDatabaseQueueIfNeeded];
     
     __typeof__(self) __weak weakSelf = self;
@@ -101,6 +102,11 @@
             if (itemType != CBSIndexItemTypeIgnore) {
                 params[@"itemtype"] = @(itemType);
                 [query appendString:@" AND item_type = :itemtype "];
+            }
+            
+            // add order by
+            if (weakSelf.orderType == CBSSearcherOrderTypeRelevance) {
+                [query appendFormat:@" ORDER BY rank(matchinfo(%@)) DESC ", weakSelf.indexName];
             }
             
             // add limit info
@@ -175,7 +181,7 @@
 
 - (void)enumerateItemsWithText:(NSString *)textContents itemType:(CBSIndexItemType)itemType enumerationHandler:(CBSSearcherItemsEnumerationHandler)enumerationHandler {
     self.enumerationHandler = enumerationHandler;
-    [self itemsWithText:textContents itemType:itemType offset:0 limit:-1 completionHandler:nil];
+    [self itemsWithText:textContents itemType:itemType offset:0 limit:0 completionHandler:nil];
 }
 
 @end

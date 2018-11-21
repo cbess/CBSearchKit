@@ -21,7 +21,7 @@
 
 - (NSArray *)buildIndex {
     // create in-memory index
-    self.indexer = [[CBSIndexer alloc] initWithDatabaseNamed:nil];
+    self.indexer = [CBSIndexer indexer];
     
     CBSIndexDocument *document = [CBSIndexDocument new];
     document.indexItemIdentifier = @"one-id";

@@ -25,6 +25,9 @@ typedef void(^CBSIndexerCompletionHandler)(NSError * _Nullable error);
 /// The GCD queue used for asynchronous index operations.
 @property (nonatomic, nonnull, strong) dispatch_queue_t indexQueue;
 
+/// Indicates if the index supports ORDER BY relevance. Rank function was successfully setup.
+@property (readonly) BOOL supportsRanking;
+
 /**
  Set the internal FTS engine used.
  
@@ -41,6 +44,9 @@ typedef void(^CBSIndexerCompletionHandler)(NSError * _Nullable error);
  */
 + (nonnull NSString *)stringWithDatabasePathWithPathComponent:(nullable NSString *)pathComponent;
 
+/// Returns an in-memory indexer.
++ (nonnull instancetype)indexer;
+
 #pragma mark - Init
 
 /**
@@ -49,7 +55,7 @@ typedef void(^CBSIndexerCompletionHandler)(NSError * _Nullable error);
  @param dbName The name of the database to be opened or created in the cache directory. If empty, then an in-memory
  database is used.
  */
-- (nonnull)initWithDatabaseNamed:(nullable NSString *)dbName;
+- (nonnull instancetype)initWithDatabaseNamed:(nullable NSString *)dbName;
 
 /**
  Initializes the receiver using the specified database name.
@@ -58,7 +64,7 @@ typedef void(^CBSIndexerCompletionHandler)(NSError * _Nullable error);
  database is used.
  @param indexName The name of the index within the database. If nil or empty, then the default index name is used (kCBSDefaultIndexName).
  */
-- (nonnull)initWithDatabaseNamed:(nullable NSString *)dbName indexName:(nullable NSString *)indexName;
+- (nonnull instancetype)initWithDatabaseNamed:(nullable NSString *)dbName indexName:(nullable NSString *)indexName;
 
 /**
  Initializes the receiver using the specified database path.
@@ -66,7 +72,7 @@ typedef void(^CBSIndexerCompletionHandler)(NSError * _Nullable error);
  @param dbName The path of the database to be opened.
  @param indexName The name of the index within the database. If nil or empty, then the default index name is used (kCBSDefaultIndexName).
  */
-- (nonnull)initWithDatabaseAtPath:(nullable NSString *)dbPath indexName:(nullable NSString *)indexName;
+- (nonnull instancetype)initWithDatabaseAtPath:(nullable NSString *)dbPath indexName:(nullable NSString *)indexName;
 
 #pragma mark - Indexing
 

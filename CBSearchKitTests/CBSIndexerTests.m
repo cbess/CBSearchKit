@@ -19,7 +19,7 @@
     [super setUp];
     
     // in-mem index database
-    self.indexer = [[CBSIndexer alloc] initWithDatabaseNamed:@""];
+    self.indexer = [CBSIndexer indexer];
 }
 
 - (void)testCreateIndex {
@@ -36,6 +36,7 @@
     
     [self waitForExpectationsWithTimeout:3 handler:nil];
     
+    XCTAssertTrue(self.indexer.supportsRanking, @"ranking function was not setup");
     XCTAssertEqual(count, 1, @"bad index item count");
     XCTAssertEqual([self.indexer itemCount], 1, @"wrong count");
 }
