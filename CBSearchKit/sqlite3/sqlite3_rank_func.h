@@ -55,8 +55,12 @@ static void rankfunc(sqlite3_context * pCtx, int nVal, sqlite3_value ** apVal) {
      ** query, and nCol to the number of columns in the table. Then check that the
      ** size of the matchinfo blob is as expected. Return an error if it is not.
      */
-    if (nVal < 1) goto wrong_number_args;
-    aMatchinfo = (unsigned int * ) sqlite3_value_blob(apVal[0]);
+    if (nVal < 1) {
+        sqlite3_result_error(pCtx, "no args passed to function rank()", -1);
+        return;
+    }
+    
+    aMatchinfo = (unsigned int *) sqlite3_value_blob(apVal[0]);
     nMatchinfo = sqlite3_value_bytes(apVal[0]) / sizeof(int);
     if (nMatchinfo >= 2) {
         nPhrase = aMatchinfo[0];
@@ -67,7 +71,14 @@ static void rankfunc(sqlite3_context * pCtx, int nVal, sqlite3_value ** apVal) {
                              "invalid matchinfo blob passed to function rank()", -1);
         return;
     }
-    if (nVal != (1 + nCol)) goto wrong_number_args;
+    
+    // +1 for matchinfo arg
+    if (nVal != (1 + nCol)) {
+        char *msg = sqlite3_mprintf("invalid args (expected: %d, got: %d) passed to function rank()", nCol + 1, nVal);
+        sqlite3_result_error(pCtx, msg, -1);
+        sqlite3_free(msg);
+        return;
+    }
     
     /* Iterate through each phrase in the users query. */
     for (iPhrase = 0; iPhrase < nPhrase; iPhrase++) {
