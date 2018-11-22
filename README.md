@@ -51,11 +51,12 @@ pod 'CBSearchKit', :git => 'https://github.com/cbess/CBSearchKit.git', :tag => '
     XCTAssertEqual([self.indexer itemCount], indexedDocuments.count, @"Bad count");
 
     id<CBSIndexItem> oneDoc = indexedDocuments.firstObject;
-    static NSString * const searchText = @"*one*";
+    static NSString * const searchText = @"one";
 
     XCTestExpectation *expectation = [self expectationWithDescription:@"search index"];
 
     CBSSearcher *searcher = [[CBSSearcher alloc] initWithIndexer:self.indexer];
+    searcher.orderType = CBSSearcherOrderTypeRelevance;
     [searcher itemsWithText:searchText itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *items, NSError *error) {
         XCTAssertEqual(items.count, 1, @"Should be only one item");
         XCTAssertNil(error, @"Error: %@", error);

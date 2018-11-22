@@ -111,7 +111,7 @@
                  rank weight column/field = value
                  contents = 1.0 (highest ranking, because it is the primary search target/column)
                  */
-                [query appendFormat:@" ORDER BY rank(matchinfo(%@), 0, 1.0, 0, 0) DESC ", weakSelf.indexName];
+                [query appendFormat:@" ORDER BY rank(matchinfo(%@), 0.5, 1.0, 0.5, 0.5) DESC ", weakSelf.indexName];
             }
             
             // add limit info

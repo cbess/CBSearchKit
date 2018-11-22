@@ -57,7 +57,7 @@
     XCTAssertEqual([self.indexer itemCount], indexedDocuments.count, @"Bad count");
     
     id<CBSIndexItem> oneDoc = indexedDocuments.firstObject;
-    static NSString * const searchText = @"*one*";
+    static NSString * const searchText = @"one";
     
     XCTestExpectation *expectation = [self expectationWithDescription:@"search index"];
     
@@ -194,6 +194,7 @@
     
     XCTestExpectation *expectation = [self expectationWithDescription:@"search index"];
     CBSSearcher *searcher = [[CBSSearcher alloc] initWithIndexer:self.indexer];
+    searcher.orderType = CBSSearcherOrderTypeRelevance;
     [searcher itemsWithText:@"is" itemType:CBSIndexItemTypeIgnore offset:0 limit:2 completionHandler:^(NSArray<id<CBSIndexItem>> * _Nonnull items, NSError * _Nullable error) {
         XCTAssertNil(error, @"error occurred: %@", error);
         XCTAssertEqual(items.count, 2, @"wrong result count");
