@@ -24,7 +24,7 @@ Pod::Spec.new do |s|
   s.source_files  = "CBSearchKit/Classes/CBSearchKit/*.{h,m}", "CBSearchKit/sqlite3/*.{h,m}"
   s.requires_arc = true
 
-  s.dependency 'FMDB', :git => 'https://github.com/ccgus/fmdb.git', :commit => 'd31d362c'
+  s.dependency "FMDB", "2.7.5"
   s.dependency "sqlite3", "3.38.0"
   s.dependency "sqlite3/fts"
   s.dependency "sqlite3/fts5"
