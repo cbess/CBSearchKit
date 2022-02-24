@@ -43,6 +43,7 @@
 		1A0A5936204A7DD000198C3F /* CBSCustomIndexDocument.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBSCustomIndexDocument.h; sourceTree = "<group>"; };
 		1A0A5937204A7DD000198C3F /* CBSCustomIndexDocument.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CBSCustomIndexDocument.m; sourceTree = "<group>"; };
 		1A47FA3D21A5F77C006275AB /* sqlite3_rank_func.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sqlite3_rank_func.h; sourceTree = "<group>"; };
+		1ADAE3AA27C80893009611C6 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		206B95F418979039CA91C279 /* libPods-CBSearchKitTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CBSearchKitTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23E06AE6E35E1AF22D17D344 /* Pods-CBSearchKitTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CBSearchKitTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CBSearchKitTests/Pods-CBSearchKitTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7367EF1A7F1FDB6B3AC207FE /* Pods-CBSearchKit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CBSearchKit.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CBSearchKit/Pods-CBSearchKit.debug.xcconfig"; sourceTree = "<group>"; };
@@ -146,6 +147,7 @@
 			isa = PBXGroup;
 			children = (
 				921BAC8018CA93230074F396 /* README.md */,
+				1ADAE3AA27C80893009611C6 /* Package.swift */,
 				921BAC3418B9D43B0074F396 /* CBSearchKit */,
 				921BAC5218B9D43B0074F396 /* CBSearchKitTests */,
 				921BAC2D18B9D43B0074F396 /* Frameworks */,
