@@ -6,8 +6,7 @@ Simple and flexible full text search for iOS and Mac. Using the sqlite3 FTS3/4 e
 ## Setup
 
 - Link `libsqlite3.dylib`
-- Add `
-pod 'CBSearchKit', :git => 'https://github.com/cbess/CBSearchKit.git', :tag => 'v0.5.0'` to `Podfile`
+- Add `pod 'CBSearchKit', :git => 'https://github.com/cbess/CBSearchKit.git', :tag => 'v0.6.0'` to `Podfile`
 - Run `pod update`
 
 ## Example Usage
