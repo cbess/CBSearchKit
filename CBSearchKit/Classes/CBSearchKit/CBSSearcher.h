@@ -68,7 +68,7 @@ typedef NS_ENUM(NSInteger, CBSSearcherOrderType) {
 
 /**
  Sets the handler used to create item objects. It converts `CBSIndexItem` into custom objects.
- @discussion This is used to create objects that are given passed to the search item handlers.
+ @discussion This is used to create objects that are passed to the search item handlers.
  */
 - (void)setItemFactoryHandler:(nullable CBSSearcherItemFactoryHandler)handler;
 

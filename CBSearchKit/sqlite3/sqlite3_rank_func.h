@@ -60,7 +60,7 @@ static void rankfunc(sqlite3_context * pCtx, int nVal, sqlite3_value ** apVal) {
         return;
     }
     
-    aMatchinfo = (unsigned int *) sqlite3_value_blob(apVal[0]);
+    aMatchinfo = (int *) sqlite3_value_blob(apVal[0]);
     nMatchinfo = sqlite3_value_bytes(apVal[0]) / sizeof(int);
     if (nMatchinfo >= 2) {
         nPhrase = aMatchinfo[0];

@@ -8,9 +8,7 @@
 
 #import "CBSSearcher.h"
 #import "CBSIndexer.h"
-#import <FMDB/FMDatabaseQueue.h>
-#import <FMDB/FMDatabase.h>
-#import <FMDB/FMResultSet.h>
+#import <fmdb/FMDB.h>
 
 @interface CBSSearcher ()
 

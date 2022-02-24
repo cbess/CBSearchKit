@@ -7,9 +7,7 @@
 //
 
 #import "CBSIndexer.h"
-#import <FMDB/FMDatabase.h>
-#import <FMDB/FMDatabaseQueue.h>
-#import <FMDB/FMResultSet.h>
+#import <fmdb/FMDB.h>
 #import "sqlite3_rank_func.h"
 #import "CBSMacros.h"
 
@@ -42,8 +40,9 @@ static NSString * gFTSEngineVersion = nil;
 }
 
 + (NSString *)stringWithDatabasePathWithPathComponent:(NSString *)pathComp {
-    if (!pathComp.length)
+    if (!pathComp.length) {
         return [NSString string];
+    }
     
     NSString *path = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
     return [path stringByAppendingPathComponent:pathComp];
@@ -110,8 +109,9 @@ static NSString * gFTSEngineVersion = nil;
 }
 
 - (void)createFTSIfNeeded {
-    if (self.databaseCreated)
+    if (self.databaseCreated) {
         return;
+    }
     
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
         NSString *query = [NSString stringWithFormat:
@@ -235,11 +235,9 @@ static NSString * gFTSEngineVersion = nil;
             }
         }];
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (completionHandler) {
-                completionHandler(indexedItems, error);
-            }
-        });
+        if (completionHandler) {
+            completionHandler(indexedItems, error);
+        }
     });
 }
 
@@ -301,16 +299,14 @@ static NSString * gFTSEngineVersion = nil;
             }
         }];
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (completionHandler) {
-                completionHandler(error);
-            }
-        });
+        if (completionHandler) {
+            completionHandler(error);
+        }
     });
 }
 
 - (void)removeItemWithID:(CBSIndexItemIdentifier)identifier {
-    // create a temp obj
+    // create a temp doc
     CBSIndexDocument *item = [CBSIndexDocument new];
     item.indexItemIdentifier = identifier;
     

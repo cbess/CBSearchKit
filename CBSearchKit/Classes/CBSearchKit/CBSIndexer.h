@@ -78,24 +78,28 @@ typedef void(^CBSIndexerCompletionHandler)(NSError * _Nullable error);
 
 /// Adds the specified CBSIndexItem to the receiver index.
 /// @param item The CBSIndexItem object to add to the index.
+/// @param completionHandler Runs in `indexQueue`.
 - (void)addItem:(nonnull id<CBSIndexItem>)item completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
 
 /// Adds the given CBSIndexItem objects to the receiver index.
 /// @param items The fast enumeration collection that contains the CBSIndexItem objects.
+/// @param completionHandler Runs in `indexQueue`.
 - (void)addItems:(nonnull id<NSFastEnumeration>)items completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
 
 /// Updates the index entry for the specified item.
-/// @discussion Adds and removes the item.
+/// @param completionHandler Runs in `indexQueue`.
+/// @discussion Removes, then adds the item to the index.
 - (void)updateItem:(nonnull id<CBSIndexItem>)item completionHandler:(nullable CBSIndexerItemsCompletionHandler)completionHandler;
 
-/// Removes the item with the specified identifier from the index.
+/// Removes the item with the specified identifier from the index. Non-blocking operation.
 - (void)removeItemWithID:(nonnull CBSIndexItemIdentifier)identifier;
 
 /// Removes the item from the index.
-/// @discussion The item must have a valid identifier.
+/// @discussion The item must have a valid identifier. Non-blocking operation.
 - (void)removeItem:(nonnull id<CBSIndexItem>)item;
 
-/// Removes the given CBSIndexItem objects from the receiever index.
+/// Removes the given CBSIndexItem objects from the receiver index.
+/// @param completionHandler Runs in `indexQueue`.
 /// @discussion Each item must have a valid identifier.
 - (void)removeItems:(nonnull id<NSFastEnumeration>)items completionHandler:(nullable CBSIndexerCompletionHandler)completionHandler;
 
