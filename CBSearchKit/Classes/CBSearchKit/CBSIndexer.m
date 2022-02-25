@@ -87,7 +87,7 @@ static NSString * gFTSEngineVersion = nil;
 - (id)init {
     self = [super init];
     if (self) {
-        _indexQueue = dispatch_queue_create("com.cbess.cbsindexer", 0);
+        _indexQueue = dispatch_queue_create("com.cbess.cbsindexer", DISPATCH_QUEUE_SERIAL);
     }
     return self;
 }
