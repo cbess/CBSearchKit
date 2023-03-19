@@ -115,9 +115,11 @@ static NSString * gFTSEngineVersion = nil;
     
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
         NSString *query = [NSString stringWithFormat:
-                           @"CREATE VIRTUAL TABLE IF NOT EXISTS %@ USING %@ (item_id, contents, item_type, item_meta)",
+                           @"CREATE VIRTUAL TABLE IF NOT EXISTS %@ USING %@ (item_id, contents, item_type, %@)",
                            self.indexName,
-                           gFTSEngineVersion];
+                           gFTSEngineVersion,
+                           // item_meta
+                           (gFTSEngineVersion == kCBSFTSEngineVersion5 ? @"item_meta UNINDEXED" : @"item_meta, notindexed=item_meta")];
         BOOL success = [db executeUpdate:query];
         
         if ([db hadError]) {
@@ -247,6 +249,11 @@ static NSString * gFTSEngineVersion = nil;
     doc.indexItemType = itemType;
     doc.indexMeta = meta;
     
+    // assign id, if no provided
+    if (!doc.indexItemIdentifier) {
+        doc.indexItemIdentifier = [[NSUUID UUID] UUIDString];
+    }
+    
     [self addItem:doc completionHandler:completionHandler];
     
     return doc;
@@ -283,7 +290,7 @@ static NSString * gFTSEngineVersion = nil;
     __block NSError *error = nil;
     __typeof__(self) __weak weakSelf = self;
     dispatch_async(self.indexQueue, ^{
-        [weakSelf.databaseQueue inDatabase:^(FMDatabase *db) {
+        [weakSelf.databaseQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
             for (id<CBSIndexItem> item in items) {
                 NSAssert([item indexItemIdentifier], @"Unable to remove item. No item identifier.");
                 

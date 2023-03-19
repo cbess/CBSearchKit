@@ -12,7 +12,7 @@ let package = Package(
         .package(
             name: "FMDB", 
             url: "https://github.com/ccgus/fmdb", 
-            revision: "d31d362"),
+            revision: "977dd81"),
     ],
     targets: [
         .target(

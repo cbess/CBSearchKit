@@ -22,23 +22,44 @@
     self.indexer = [CBSIndexer indexer];
 }
 
-- (void)testCreateIndex {
+- (void)testIndexText {
     NSString *text = @"some text";
-    XCTestExpectation *expectation = [self expectationWithDescription:@"create index"];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"index text"];
     
-    __block NSInteger count = 0;
     [self.indexer addTextContents:text itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *indexItems, NSError *error) {
         XCTAssertNil(error);
+        XCTAssertEqual(indexItems.count, 1, @"bad index item count");
         
-        count = indexItems.count;
         [expectation fulfill];
     }];
     
     [self waitForExpectationsWithTimeout:3 handler:nil];
     
     XCTAssertTrue(self.indexer.supportsRanking, @"ranking function was not setup");
-    XCTAssertEqual(count, 1, @"bad index item count");
     XCTAssertEqual([self.indexer itemCount], 1, @"wrong count");
+}
+
+- (void)testRemoveItems {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"index item"];
+    id<CBSIndexItem> item = [self.indexer addTextContents:@"some text" completionHandler:^(NSArray *indexItems, NSError *error) {
+        XCTAssertNil(error);
+        XCTAssertEqual(1, indexItems.count, @"bad index item count");
+        
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:3 handler:nil];
+
+    XCTAssertEqual([self.indexer itemCount], 1, @"wrong count");
+    
+    expectation = [self expectationWithDescription:@"remove item"];
+    [self.indexer removeItems:@[item] completionHandler:^(NSError * _Nullable error) {
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:3 handler:nil];
+    
+    XCTAssertEqual([self.indexer itemCount], 0, @"wrong count");
 }
 
 - (void)testOptimize {

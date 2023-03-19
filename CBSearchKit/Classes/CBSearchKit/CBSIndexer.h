@@ -12,7 +12,7 @@
 extern NSString * _Nonnull const kCBSDefaultIndexName;
 extern NSString * _Nonnull const kCBSFTSEngineVersion3; // fts3
 extern NSString * _Nonnull const kCBSFTSEngineVersion4; // fts4
-extern NSString * _Nonnull const kCBSFTSEngineVersion5; // fts5
+//extern NSString * _Nonnull const kCBSFTSEngineVersion5; // fts5, not fully supported
 
 typedef void(^CBSIndexerReindexCompletionHandler)(NSUInteger itemCount, NSError * _Nullable error);
 typedef void(^CBSIndexerItemsCompletionHandler)(NSArray<id<CBSIndexItem>> * _Nonnull indexItems, NSError * _Nullable error);
