@@ -62,7 +62,7 @@
     self = [super init];
     if (self) {
         _orderType = CBSSearcherOrderTypeDefault;
-        _searchQueue = dispatch_queue_create("com.cbess.cbssearcher", 0);
+        _searchQueue = dispatch_queue_create("com.cbssearcher", 0);
     }
     return self;
 }
@@ -105,12 +105,8 @@
             
             // add order by
             if (weakSelf.orderType == CBSSearcherOrderTypeRelevance) {
-                /*
-                 The ranking clause:
-                 rank weight column/field = value
-                 contents = 1.0 (highest ranking, because it is the primary search target/column)
-                 */
-                [query appendFormat:@" ORDER BY rank(matchinfo(%@), 0.5, 1.0, 0.5, 0.5) DESC ", weakSelf.indexName];
+                // negative value, so ascending order puts best match first
+                [query appendFormat:@" ORDER BY rank "];
             }
             
             // add limit info

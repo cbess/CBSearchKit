@@ -153,7 +153,7 @@
     XCTAssertEqual([self.indexer itemCount], indexedDocuments.count, @"Bad count");
     
     id<CBSIndexItem> oneDoc = indexedDocuments.firstObject;
-    static NSString * const searchText = @"*one*";
+    static NSString * const searchText = @"one*";
     
     XCTestExpectation *expectation = [self expectationWithDescription:@"search custom index"];
     

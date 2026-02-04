@@ -9,15 +9,9 @@
 @import FMDB;
 
 #import "CBSIndexer.h"
-#import "sqlite3_rank_func.h"
 #import "CBSMacros.h"
 
 NSString * const kCBSDefaultIndexName = @"cbs_fts";
-NSString * const kCBSFTSEngineVersion3 = @"fts3";
-NSString * const kCBSFTSEngineVersion4 = @"fts4";
-NSString * const kCBSFTSEngineVersion5 = @"fts5";
-
-static NSString * gFTSEngineVersion = nil;
 
 @interface CBSIndexer () {
     BOOL _supportsRanking;
@@ -31,14 +25,6 @@ static NSString * gFTSEngineVersion = nil;
 @end
 
 @implementation CBSIndexer
-
-+ (void)initialize {
-    gFTSEngineVersion = kCBSFTSEngineVersion4;
-}
-
-+ (void)setFTSEngineVersion:(NSString *)version {
-    gFTSEngineVersion = version;
-}
 
 + (NSString *)stringWithDatabasePathWithPathComponent:(NSString *)pathComp {
     if (!pathComp.length) {
@@ -88,7 +74,9 @@ static NSString * gFTSEngineVersion = nil;
 - (id)init {
     self = [super init];
     if (self) {
-        _indexQueue = dispatch_queue_create("com.cbess.cbsindexer", DISPATCH_QUEUE_SERIAL);
+        _indexQueue = dispatch_queue_create("com.cbsindexer", DISPATCH_QUEUE_SERIAL);
+        // FTS5 builtin rank
+        _supportsRanking = YES;
     }
     return self;
 }
@@ -116,11 +104,8 @@ static NSString * gFTSEngineVersion = nil;
     
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
         NSString *query = [NSString stringWithFormat:
-                           @"CREATE VIRTUAL TABLE IF NOT EXISTS %@ USING %@ (item_id, contents, item_type, %@)",
-                           self.indexName,
-                           gFTSEngineVersion,
-                           // item_meta
-                           (gFTSEngineVersion == kCBSFTSEngineVersion5 ? @"item_meta UNINDEXED" : @"item_meta, notindexed=item_meta")];
+                           @"CREATE VIRTUAL TABLE IF NOT EXISTS %@ USING fts5 (item_id, contents, item_type, item_meta UNINDEXED)",
+                           self.indexName];
         BOOL success = [db executeUpdate:query];
         
         if ([db hadError]) {
@@ -128,15 +113,6 @@ static NSString * gFTSEngineVersion = nil;
         }
         
         self.databaseCreated = success;
-        
-        if (success) {
-            // setup the rank function
-            sqlite3 *sqlDb = db.sqliteHandle;
-            int result = sqlite3_create_function(sqlDb, "rank", -1, SQLITE_ANY, NULL, rankfunc, NULL, NULL);
-            if (result == 0) {
-                self->_supportsRanking = YES;
-            }
-        }
     }];
 }
 
@@ -296,7 +272,7 @@ static NSString * gFTSEngineVersion = nil;
                 NSAssert([item indexItemIdentifier], @"Unable to remove item. No item identifier.");
                 
                 [db executeUpdate:[NSString stringWithFormat:
-                                   @"DELETE FROM %@ WHERE item_id MATCH '%@'",
+                                   @"DELETE FROM %@ WHERE item_id MATCH '\"%@\"'",
                                    weakSelf.indexName,
                                    [item indexItemIdentifier]]];
                 
@@ -325,15 +301,14 @@ static NSString * gFTSEngineVersion = nil;
     NSError *error = nil;
     [[NSFileManager defaultManager] removeItemAtPath:self.databasePath error:&error];
     
-    if (!error) {
-        self.databaseQueue = nil;
-        self.databaseCreated = NO;
-        return YES;
-    } else {
+    if (error) {
         CBSError(error);
+        return NO;
     }
     
-    return NO;
+    self.databaseQueue = nil;
+    self.databaseCreated = NO;
+    return YES;
 }
 
 - (void)reindexWithCompletionHandler:(CBSIndexerReindexCompletionHandler)completionHandler {

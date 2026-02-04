@@ -10,9 +10,6 @@
 #import "CBSIndexDocument.h"
 
 extern NSString * _Nonnull const kCBSDefaultIndexName;
-extern NSString * _Nonnull const kCBSFTSEngineVersion3; // fts3
-extern NSString * _Nonnull const kCBSFTSEngineVersion4; // fts4
-//extern NSString * _Nonnull const kCBSFTSEngineVersion5; // fts5, not fully supported
 
 typedef void(^CBSIndexerReindexCompletionHandler)(NSUInteger itemCount, NSError * _Nullable error);
 typedef void(^CBSIndexerItemsCompletionHandler)(NSArray<id<CBSIndexItem>> * _Nonnull indexItems, NSError * _Nullable error);
@@ -27,14 +24,6 @@ typedef void(^CBSIndexerCompletionHandler)(NSError * _Nullable error);
 
 /// Indicates if the index supports ORDER BY relevance. Rank function was successfully setup.
 @property (readonly) BOOL supportsRanking;
-
-/**
- Set the internal FTS engine used.
- 
- @param version Use kCBSFTSEngineVersion* constant.
- @discussion Defaults to kCBSFTSEngineVersion4.
- */
-+ (void)setFTSEngineVersion:(nonnull NSString *)version;
 
 /**
  The path to the index database by appending the specified path component (usually the file name).
