@@ -3,11 +3,21 @@ CBSearchKit
 
 Simple and flexible full text search for iOS and Mac. Using the sqlite3 FTS3/4 engine.
 
-## Setup
+## Installation
 
-- Link `libsqlite3.dylib`
-- Add `pod 'CBSearchKit', :git => 'https://github.com/cbess/CBSearchKit.git', :tag => 'v0.6.0'` to `Podfile`
-- Run `pod update`
+### Swift Package Manager
+
+1. In Xcode, select File > Add Packages...
+2. Enter the package URL: `https://github.com/cbess/CBSearchKit.git`
+3. Add the `CBSearchKit` library to your target.
+
+Alternatively, add it to your `Package.swift`:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/cbess/CBSearchKit.git", from: "0.7.0")
+]
+```
 
 ## Example Usage
 

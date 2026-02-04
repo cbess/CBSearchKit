@@ -6,9 +6,10 @@
 //  Copyright (c) 2014 C. Bess. All rights reserved.
 //
 
+@import FMDB;
+
 #import "CBSSearcher.h"
 #import "CBSIndexer.h"
-#import <fmdb/FMDB.h>
 
 @interface CBSSearcher ()
 

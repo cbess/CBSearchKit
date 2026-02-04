@@ -6,8 +6,9 @@
 //  Copyright (c) 2014 C. Bess. All rights reserved.
 //
 
+@import FMDB;
+
 #import "CBSIndexer.h"
-#import <fmdb/FMDB.h>
 #import "sqlite3_rank_func.h"
 #import "CBSMacros.h"
 

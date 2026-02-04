@@ -5,21 +5,27 @@ import PackageDescription
 
 let package = Package(
     name: "CBSearchKit",
+    platforms: [
+        .iOS(.v13),
+        .macOS(.v10_15),
+    ],
     products: [
         .library(name: "CBSearchKit", targets: ["CBSearchKit"]),
     ],
     dependencies: [
-        .package(
-            name: "FMDB", 
-            url: "https://github.com/ccgus/fmdb", 
-            revision: "977dd81"),
+        .package(url: "https://github.com/ccgus/fmdb", from: "2.7.5"),
     ],
     targets: [
         .target(
             name: "CBSearchKit",
-            dependencies: ["FMDB"],
-            path: "CBSearchKit/Classes/CBSearchKit",
-            sources: ["../../sqlite3", "."],
-            publicHeadersPath: "."),
+            dependencies: [
+                .product(name: "FMDB", package: "fmdb"),
+            ],
+            path: "Sources/CBSearchKit",
+            publicHeadersPath: "include"),
+        .testTarget(
+            name: "CBSearchKitTests",
+            dependencies: ["CBSearchKit"],
+            path: "Tests/CBSearchKitTests"),
     ]
 )
