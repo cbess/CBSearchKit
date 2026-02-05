@@ -22,11 +22,11 @@ typedef NSInteger CBSIndexItemType;
 extern NSInteger const CBSIndexItemTypeIgnore;
 
 
-/// A database index item.
+/// Forwards the call to the internal index item object.
 @protocol CBSIndexItem <NSObject>
 
 /// The identifier for the receiver in the index database.
-- (nullable CBSIndexItemIdentifier)indexItemIdentifier;
+- (nonnull CBSIndexItemIdentifier)indexItemIdentifier;
 
 /**
  The text contents to index.
@@ -62,12 +62,26 @@ extern NSInteger const CBSIndexItemTypeIgnore;
 @end
 
 
-/// Represents a concrete CBIndexItem type.
+/// Represents a concrete `CBIndexItem` type.
 @interface CBSIndexDocument : NSObject <CBSIndexItem, NSCopying>
 
-@property (nonatomic, copy, nullable) CBSIndexItemIdentifier indexItemIdentifier;
+@property (nonatomic, copy, nonnull, readonly) CBSIndexItemIdentifier indexItemIdentifier;
 @property (nonatomic, copy, nonnull) NSString *indexTextContents;
 @property (nonatomic, assign) CBSIndexItemType indexItemType;
 @property (nonatomic, copy, nullable) NSDictionary *indexMeta;
+
+/// Creates a new instance with a unique ID assigned
++ (nonnull instancetype)newWithUID;
+
+/// Creates a new instance with the specified ID
++ (nonnull instancetype)newWithID:(nonnull CBSIndexItemIdentifier)identifier;
+
+/// Creates a new instance with the specified ID and text
++ (nonnull instancetype)newWithID:(nonnull CBSIndexItemIdentifier)identifier text:(nullable NSString *)text;
+
+/// Initializes a new instance with specified identifier
+- (nonnull instancetype)initWithID:(nonnull CBSIndexItemIdentifier)identifier;
+
+- (nonnull id)init NS_UNAVAILABLE;
 
 @end

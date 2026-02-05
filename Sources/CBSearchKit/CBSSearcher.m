@@ -92,15 +92,17 @@
             NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:3];
             params[@"contents"] = textContents;
             
+            NSString *metaTableName = [weakSelf.indexName stringByAppendingString:@"_meta"];
             NSMutableString *query = [[NSMutableString alloc] initWithFormat:
-                                      // change 'contents' column, change in 'CBSIndexer.m'
-                                      @"SELECT * FROM %@ WHERE contents MATCH :contents ",
-                                      weakSelf.indexName];
+                                      @"SELECT T.contents, T.item_meta, M.item_id "
+                                      @"FROM %@ T JOIN %@ M ON T.rowid = M.rowid "
+                                      @"WHERE T.contents MATCH :contents ",
+                                      weakSelf.indexName, metaTableName];
             
             // use the index item type if not ignored
             if (itemType != CBSIndexItemTypeIgnore) {
                 params[@"itemtype"] = @(itemType);
-                [query appendString:@" AND item_type = :itemtype "];
+                [query appendString:@" AND M.item_type = :itemtype "];
             }
             
             // add order by
@@ -121,9 +123,8 @@
             
             FMResultSet *result = [db executeQuery:query withParameterDictionary:params];
             while ([result next]) {
-                CBSIndexDocument *document = [CBSIndexDocument new];
+                CBSIndexDocument *document = [[CBSIndexDocument alloc] initWithID:result[@"item_id"]];
                 document.indexTextContents = result[@"contents"];
-                document.indexItemIdentifier = result[@"item_id"];
                 
                 if (![result columnIsNull:@"item_meta"]) {
                     NSData *metaData = result[@"item_meta"];

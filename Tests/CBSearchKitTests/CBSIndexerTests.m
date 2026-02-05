@@ -35,7 +35,6 @@
     
     [self waitForExpectationsWithTimeout:3 handler:nil];
     
-    XCTAssertTrue(self.indexer.supportsRanking, @"ranking function was not setup");
     XCTAssertEqual([self.indexer itemCount], 1, @"wrong count");
 }
 
@@ -79,9 +78,11 @@
 
 - (void)testReindex {
     XCTestExpectation *expectation = [self expectationWithDescription:@"reindex"];
-    CBSIndexDocument *document = [CBSIndexDocument new];
-    document.indexTextContents = @"some text";
-    NSArray *documents = @[document, document.copy, document.copy];
+    CBSIndexDocument *doc1 = [CBSIndexDocument newWithID:@"one" text:@"some text"];
+    CBSIndexDocument *doc2 = [CBSIndexDocument newWithID:@"two" text:@"some text"];
+    CBSIndexDocument *doc3 = [CBSIndexDocument newWithID:@"three" text:@"some text"];
+    
+    NSArray *documents = @[doc1, doc2, doc3];
     
     __typeof__(self) __weak weakSelf = self;
     __block NSUInteger count = 0;

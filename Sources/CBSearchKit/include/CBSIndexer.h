@@ -22,9 +22,6 @@ typedef void(^CBSIndexerCompletionHandler)(NSError * _Nullable error);
 /// The GCD queue used for asynchronous index operations.
 @property (nonatomic, nonnull, strong) dispatch_queue_t indexQueue;
 
-/// Indicates if the index supports ORDER BY relevance. Rank function was successfully setup.
-@property (readonly) BOOL supportsRanking;
-
 /**
  The path to the index database by appending the specified path component (usually the file name).
  

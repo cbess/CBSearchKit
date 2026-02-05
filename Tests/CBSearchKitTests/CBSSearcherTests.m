@@ -23,16 +23,15 @@
     // create in-memory index
     self.indexer = [CBSIndexer indexer];
     
-    CBSIndexDocument *document = [CBSIndexDocument new];
-    document.indexItemIdentifier = @"one-id";
+    CBSIndexDocument *document = [CBSIndexDocument newWithID:@"one-id"];
     document.indexTextContents = @"this is one";
     document.indexMeta = @{@"idx": @1, @"name": @"one"};
     
-    CBSIndexDocument *document2 = [CBSIndexDocument new];
+    CBSIndexDocument *document2 = [CBSIndexDocument newWithID:@"two-id"];
     document2.indexTextContents = @"this is two";
     document2.indexMeta = @{@"idx": @2, @"name": @"two"};
     
-    CBSIndexDocument *document3 = [CBSIndexDocument new];
+    CBSIndexDocument *document3 = [CBSIndexDocument newWithID:@"three-id"];
     document3.indexTextContents = @"this is three";
     document3.indexMeta = @{@"idx": @3, @"test": @"three", @"name": @"three"};
     
@@ -83,12 +82,10 @@
 - (void)testUpdateItem {
     [self buildIndex];
     
-    CBSIndexDocument *document = [CBSIndexDocument new];
-    document.indexItemIdentifier = @"one";
+    CBSIndexDocument *document = [CBSIndexDocument newWithID:@"one"];
     document.indexTextContents = @"uno Dios"; // one God
     
-    CBSIndexDocument *document2 = [CBSIndexDocument new];
-    document2.indexItemIdentifier = @"two";
+    CBSIndexDocument *document2 = [CBSIndexDocument newWithID:@"two"];
     document2.indexTextContents = @"一王人"; // one King
     
     XCTestExpectation *expectation = [self expectationWithDescription:@"index"];
@@ -161,7 +158,7 @@
     
     // set the item factory to create the custom object
     [searcher setItemFactoryHandler:^id _Nonnull(id<CBSIndexItem>  _Nonnull item) {
-        CBSCustomIndexDocument *object = [CBSCustomIndexDocument new];
+        CBSCustomIndexDocument *object = [CBSCustomIndexDocument newWithID:item.indexItemIdentifier];
         object.uid = item.indexItemIdentifier;
         object.name = item.indexMeta[@"name"];
         object.index = item.indexMeta[@"idx"];
@@ -179,7 +176,7 @@
         XCTAssertNotNil(item, @"No meta");
         XCTAssertTrue([item isKindOfClass:[CBSCustomIndexDocument class]], @"wrong object");
         XCTAssertEqualObjects(item.index, [oneDoc indexMeta][@"idx"], @"Wrong meta value");
-        XCTAssertEqualObjects(item.uid, [oneDoc indexItemIdentifier], @"Wrong index identifier");
+        XCTAssertEqualObjects(item.uid, oneDoc.indexItemIdentifier, @"Wrong index identifier");
         
         [expectation fulfill];
     }];

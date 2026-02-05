@@ -75,14 +75,8 @@ NSString * const kCBSDefaultIndexName = @"cbs_fts";
     self = [super init];
     if (self) {
         _indexQueue = dispatch_queue_create("com.cbsindexer", DISPATCH_QUEUE_SERIAL);
-        // FTS5 builtin rank
-        _supportsRanking = YES;
     }
     return self;
-}
-
-- (BOOL)supportsRanking {
-    return _supportsRanking;
 }
 
 #pragma mark - Misc
@@ -102,15 +96,34 @@ NSString * const kCBSDefaultIndexName = @"cbs_fts";
         return;
     }
     
-    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+    [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+        // FTS table
         NSString *query = [NSString stringWithFormat:
-                           @"CREATE VIRTUAL TABLE IF NOT EXISTS %@ USING fts5 (item_id, contents, item_type, item_meta UNINDEXED)",
+                           @"CREATE VIRTUAL TABLE IF NOT EXISTS %@ USING fts5 (contents, item_meta UNINDEXED)",
                            self.indexName];
         BOOL success = [db executeUpdate:query];
         
-        if ([db hadError]) {
+        if (!success) {
             CBSError([db lastError]);
+            *rollback = YES;
+            return;
         }
+        
+        // Meta table
+        NSString *metaTableName = [self.indexName stringByAppendingString:@"_meta"];
+        NSString *metaQuery = [NSString stringWithFormat:
+                               @"CREATE TABLE IF NOT EXISTS %@ (rowid INTEGER PRIMARY KEY, item_id TEXT NOT NULL UNIQUE, item_type INTEGER NOT NULL)",
+                               metaTableName];
+        success = [db executeUpdate:metaQuery];
+        
+        if (!success) {
+            CBSError([db lastError]);
+            *rollback = YES;
+            return;
+        }
+        
+        // Indices
+        [db executeUpdate:[NSString stringWithFormat:@"CREATE INDEX IF NOT EXISTS %@_item_type_idx ON %@ (item_type)", metaTableName, metaTableName]];
         
         self.databaseCreated = success;
     }];
@@ -138,7 +151,7 @@ NSString * const kCBSDefaultIndexName = @"cbs_fts";
             for (id<CBSIndexItem> item in items) {
                 // check self, if released, bail
                 if (!weakSelf) {
-                    NSError *error = [NSError errorWithDomain:@"error.cbsindexer"
+                    error = [NSError errorWithDomain:@"com.cbsindexer"
                                                          code:0
                                                      userInfo:@{NSLocalizedDescriptionKey: @"indexer released"}];
                     CBSError(error);
@@ -151,36 +164,30 @@ NSString * const kCBSDefaultIndexName = @"cbs_fts";
                     continue;
                 }
                 
+                // validate identifier
+                NSString *identifer = item.indexItemIdentifier;
+                if (!identifer.length) {
+                     error = [NSError errorWithDomain:@"com.cbsindexer"
+                                                 code:1
+                                             userInfo:@{NSLocalizedDescriptionKey: @"Missing item identifier."}];
+                     CBSError(error);
+                     *rollback = YES;
+                     break;
+                }
+
                 @autoreleasepool {
                     [item willIndex];
                     
-                    NSMutableArray *queryColumns = [NSMutableArray array];
-                    NSMutableArray *queryParamNames = [NSMutableArray array];
+                    // 1. Insert into FTS
+                    NSMutableArray *ftsColumns = [NSMutableArray arrayWithObject:@"contents"];
+                    NSMutableArray *ftsParams = [NSMutableArray arrayWithObject:@":contents"];
                     
-                    // determine desired query to insert the data
-                    
-                    // contents
-                    [queryColumns addObject:@"contents"];
-                    [queryParamNames addObject:@":contents"];
                     params[@"contents"] = [item indexTextContents];
-                    
-                    // item type
-                    [queryColumns addObject:@"item_type"];
-                    [queryParamNames addObject:@":type"];
-                    params[@"type"] = @([item indexItemType]);
-                    
-                    // identifier
-                    NSString *identifer = [item indexItemIdentifier];
-                    if (identifer.length) {
-                        [queryColumns addObject:@"item_id"];
-                        [queryParamNames addObject:@":identifier"];
-                        params[@"identifier"] = identifer;
-                    }
                     
                     // meta
                     if ([item indexMeta].count) {
-                        [queryColumns addObject:@"item_meta"];
-                        [queryParamNames addObject:@":meta"];
+                        [ftsColumns addObject:@"item_meta"];
+                        [ftsParams addObject:@":meta"];
                         params[@"meta"] = [NSJSONSerialization dataWithJSONObject:[item indexMeta]
                                                                           options:0
                                                                             error:&error];
@@ -191,14 +198,31 @@ NSString * const kCBSDefaultIndexName = @"cbs_fts";
                         }
                     }
                     
-                    // build query, store index
-                    NSString *query = [NSString stringWithFormat:
+                    NSString *ftsQuery = [NSString stringWithFormat:
                                        @"INSERT INTO %@ (%@) VALUES (%@)",
                                        weakSelf.indexName,
-                                       [queryColumns componentsJoinedByString:@","],
-                                       [queryParamNames componentsJoinedByString:@","]];
-                    [db executeUpdate:query withParameterDictionary:params];
+                                       [ftsColumns componentsJoinedByString:@","],
+                                       [ftsParams componentsJoinedByString:@","]];
+                    
+                    [db executeUpdate:ftsQuery withParameterDictionary:params];
                     [params removeAllObjects];
+                    
+                    if ([db hadError]) {
+                        error = [db lastError];
+                        CBSError(error);
+                        
+                        *rollback = YES;
+                        break;
+                    }
+                    
+                    // 2. Insert into Meta
+                    long long rowId = [db lastInsertRowId];
+                    NSString *metaTableName = [NSString stringWithFormat:@"%@_meta", weakSelf.indexName];
+                    NSString *metaQuery = [NSString stringWithFormat:
+                                           @"INSERT INTO %@ (rowid, item_id, item_type) VALUES (?, ?, ?)",
+                                           metaTableName];
+                    
+                    [db executeUpdate:metaQuery, @(rowId), identifer, @([item indexItemType])];
                     
                     if ([db hadError]) {
                         error = [db lastError];
@@ -215,22 +239,19 @@ NSString * const kCBSDefaultIndexName = @"cbs_fts";
         }];
         
         if (completionHandler) {
-            completionHandler(indexedItems, error);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionHandler(indexedItems, error);
+            });
         }
     });
 }
 
 - (id<CBSIndexItem>)addTextContents:(NSString *)contents itemType:(CBSIndexItemType)itemType meta:(NSDictionary *)meta completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler {
-    CBSIndexDocument *doc = [CBSIndexDocument new];
+    CBSIndexDocument *doc = [CBSIndexDocument newWithUID];
     doc.indexTextContents = contents;
     doc.indexItemType = itemType;
     doc.indexMeta = meta;
-    
-    // assign id, if no provided
-    if (!doc.indexItemIdentifier) {
-        doc.indexItemIdentifier = [[NSUUID UUID] UUIDString];
-    }
-    
+        
     [self addItem:doc completionHandler:completionHandler];
     
     return doc;
@@ -247,8 +268,10 @@ NSString * const kCBSDefaultIndexName = @"cbs_fts";
 - (void)updateItem:(id<CBSIndexItem>)item completionHandler:(CBSIndexerItemsCompletionHandler)completionHandler {
     __typeof__(self) __weak weakSelf = self;
     [self removeItems:@[item] completionHandler:^(NSError * _Nullable error) {
-        if (error && completionHandler) {
-            completionHandler(@[], error);
+        if (error) {
+            if (completionHandler) {
+                completionHandler(@[], error);
+            }
             return;
         }
         
@@ -268,13 +291,30 @@ NSString * const kCBSDefaultIndexName = @"cbs_fts";
     __typeof__(self) __weak weakSelf = self;
     dispatch_async(self.indexQueue, ^{
         [weakSelf.databaseQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
+            NSString *metaTableName = [NSString stringWithFormat:@"%@_meta", weakSelf.indexName];
+            
             for (id<CBSIndexItem> item in items) {
-                NSAssert([item indexItemIdentifier], @"Unable to remove item. No item identifier.");
+                NSAssert(item.indexItemIdentifier, @"Unable to remove item. No item identifier.");
                 
-                [db executeUpdate:[NSString stringWithFormat:
-                                   @"DELETE FROM %@ WHERE item_id MATCH '\"%@\"'",
-                                   weakSelf.indexName,
-                                   [item indexItemIdentifier]]];
+                NSString *itemID = item.indexItemIdentifier;
+                
+                // get rowid
+                FMResultSet *rs = [db executeQuery:[NSString stringWithFormat:@"SELECT rowid FROM %@ WHERE item_id = ?", metaTableName], itemID];
+                long long rowId = -1;
+                if ([rs next]) {
+                    rowId = [rs longLongIntForColumnIndex:0];
+                }
+                [rs close];
+                
+                if (rowId == -1) {
+                    continue;
+                }
+                
+                // delete from FTS
+                [db executeUpdate:[NSString stringWithFormat:@"DELETE FROM %@ WHERE rowid = ?", weakSelf.indexName], @(rowId)];
+                
+                // delete from meta
+                [db executeUpdate:[NSString stringWithFormat:@"DELETE FROM %@ WHERE rowid = ?", metaTableName], @(rowId)];
                 
                 if ([db hadError]) {
                     error = [db lastError];
@@ -283,16 +323,17 @@ NSString * const kCBSDefaultIndexName = @"cbs_fts";
             }
         }];
         
-        if (completionHandler) {
-            completionHandler(error);
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (completionHandler) {
+                completionHandler(error);
+            }
+        });
     });
 }
 
 - (void)removeItemWithID:(CBSIndexItemIdentifier)identifier {
     // create a temp doc
-    CBSIndexDocument *item = [CBSIndexDocument new];
-    item.indexItemIdentifier = identifier;
+    CBSIndexDocument *item = [CBSIndexDocument newWithID:identifier];
     
     [self removeItem:item];
 }
@@ -319,11 +360,14 @@ NSString * const kCBSDefaultIndexName = @"cbs_fts";
     __typeof__(self) __weak weakSelf = self;
     dispatch_async(self.indexQueue, ^{
         [weakSelf.databaseQueue inDatabase:^(FMDatabase *db) {
-            // rebuild index structure
+            // rebuild FTS index structure
             [db executeUpdate:[NSString stringWithFormat:
                                @"INSERT INTO %@ (%@) VALUES ('rebuild')",
                                weakSelf.indexName,
                                weakSelf.indexName]];
+
+            // rebuild meta table indices
+            [db executeUpdate:[NSString stringWithFormat:@"REINDEX %@_meta", weakSelf.indexName]];
             
             if ([db hadError]) {
                 error = [db lastError];
@@ -352,6 +396,9 @@ NSString * const kCBSDefaultIndexName = @"cbs_fts";
             [db executeUpdate:[NSString stringWithFormat:@"INSERT INTO %@(%@) VALUES ('optimize')",
              weakSelf.indexName,
              weakSelf.indexName]];
+            
+            // analyze meta table
+            [db executeUpdate:[NSString stringWithFormat:@"ANALYZE %@_meta", weakSelf.indexName]];
             
             if ([db hadError]) {
                 error = [db lastError];
