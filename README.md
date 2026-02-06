@@ -1,7 +1,7 @@
 CBSearchKit
 ===========
 
-Simple and flexible full text search for iOS and Mac. Using the sqlite3 FTS4/5 engine.
+Simple and flexible full text search library for iOS and macOS written in Objective-C. It uses the sqlite3 FTS5 engine.
 
 ## Installation
 
@@ -84,6 +84,6 @@ dependencies: [
 }
 ```
 
-See [unit tests](CBSearchKitTests) for more examples.
+See [unit tests](Tests/CBSearchKitTests) for more examples.
 
-[Soli Deo Gloria](http://perfectGod.com)
+[Soli Deo Gloria](https://perfectGod.com)
