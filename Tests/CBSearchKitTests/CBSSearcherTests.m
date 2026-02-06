@@ -61,7 +61,6 @@
     XCTestExpectation *expectation = [self expectationWithDescription:@"search index"];
     
     CBSSearcher *searcher = [[CBSSearcher alloc] initWithIndexer:self.indexer];
-    searcher.orderType = CBSSearcherOrderTypeRelevance;
     [searcher itemsWithText:searchText itemType:CBSIndexItemTypeIgnore completionHandler:^(NSArray *items, NSError *error) {
         XCTAssertEqual(items.count, 1, @"Should be only one item");
         XCTAssertNil(error, @"Error: %@", error);
@@ -191,7 +190,6 @@
     
     XCTestExpectation *expectation = [self expectationWithDescription:@"search index"];
     CBSSearcher *searcher = [[CBSSearcher alloc] initWithIndexer:self.indexer];
-    searcher.orderType = CBSSearcherOrderTypeRelevance;
     [searcher itemsWithText:@"is" itemType:CBSIndexItemTypeIgnore offset:0 limit:2 completionHandler:^(NSArray<id<CBSIndexItem>> * _Nonnull items, NSError * _Nullable error) {
         XCTAssertNil(error, @"error occurred: %@", error);
         XCTAssertEqual(items.count, 2, @"wrong result count");
@@ -199,6 +197,57 @@
         [expectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
+- (void)testSearchPriority {
+    [self buildIndex];
+    
+    // Add items with same content but different priority
+    CBSIndexDocument *doc1 = [CBSIndexDocument newWithID:@"p1" text:@"priority test"];
+    doc1.priority = 10;
+
+    CBSIndexDocument *doc2 = [CBSIndexDocument newWithID:@"p2" text:@"priority test"];
+    doc2.priority = 0; // Should come first if ASC
+
+    CBSIndexDocument *doc3 = [CBSIndexDocument newWithID:@"p3" text:@"priority test"];
+    doc3.priority = 20;
+
+    NSArray *docs = @[doc1, doc2, doc3];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"index priority items"];
+    [self.indexer addItems:docs completionHandler:^(NSArray *indexItems, NSError *error) {
+        XCTAssertNil(error);
+        [expectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+
+    // Search
+    CBSSearcher *searcher = [[CBSSearcher alloc] initWithIndexer:self.indexer];
+    
+    // Rank logic:
+    // All 3 items match "priority" exactly once in short string.
+    // Rank should be similar.
+    // So priority should determine order.
+    
+    XCTestExpectation *searchExpectation = [self expectationWithDescription:@"search priority"];
+    
+    [searcher itemsWithText:@"priority" completionHandler:^(NSArray *results, NSError *error) {
+        XCTAssertNil(error);
+        XCTAssertEqual(results.count, 3);
+        
+        // Check order
+        CBSIndexDocument *r1 = results[0];
+        CBSIndexDocument *r2 = results[1];
+        CBSIndexDocument *r3 = results[2];
+        
+        // Expect: 0, 10, 20 (ASC)
+        XCTAssertEqualObjects(r1.indexItemIdentifier, @"p2");
+        XCTAssertEqualObjects(r2.indexItemIdentifier, @"p1");
+        XCTAssertEqualObjects(r3.indexItemIdentifier, @"p3");
+        
+        [searchExpectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:2.0 handler:nil];
 }
 
 @end

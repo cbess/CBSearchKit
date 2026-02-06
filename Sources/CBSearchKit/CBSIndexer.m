@@ -99,7 +99,7 @@ NSString * const kCBSDefaultIndexName = @"cbs_fts";
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
         // FTS table
         NSString *query = [NSString stringWithFormat:
-                           @"CREATE VIRTUAL TABLE IF NOT EXISTS %@ USING fts5 (contents, item_meta UNINDEXED)",
+                           @"CREATE VIRTUAL TABLE IF NOT EXISTS %@ USING fts5 (contents, item_meta UNINDEXED, priority UNINDEXED)",
                            self.indexName];
         BOOL success = [db executeUpdate:query];
         
@@ -160,7 +160,7 @@ NSString * const kCBSDefaultIndexName = @"cbs_fts";
                     return;
                 }
                 
-                if (![item canIndex]) {
+                if ([item respondsToSelector:@selector(canIndex)] && ![item canIndex]) {
                     continue;
                 }
                 
@@ -178,17 +178,24 @@ NSString * const kCBSDefaultIndexName = @"cbs_fts";
                 @autoreleasepool {
                     [item willIndex];
                     
-                    // 1. Insert into FTS
-                    NSMutableArray *ftsColumns = [NSMutableArray arrayWithObject:@"contents"];
-                    NSMutableArray *ftsParams = [NSMutableArray arrayWithObject:@":contents"];
+                    // priority
+                    NSInteger priority = 0;
+                    if ([item respondsToSelector:@selector(indexItemPriority)]) {
+                        priority = item.indexItemPriority;
+                    }
+
+                    // insert into FTS
+                    NSMutableArray *ftsColumns = [NSMutableArray arrayWithObjects:@"contents", @"priority", nil];
+                    NSMutableArray *ftsParams = [NSMutableArray arrayWithObjects:@":contents", @":priority", nil];
                     
-                    params[@"contents"] = [item indexTextContents];
-                    
+                    params[@"contents"] = item.indexTextContents;
+                    params[@"priority"] = @(priority);
+
                     // meta
                     if ([item indexMeta].count) {
                         [ftsColumns addObject:@"item_meta"];
                         [ftsParams addObject:@":meta"];
-                        params[@"meta"] = [NSJSONSerialization dataWithJSONObject:[item indexMeta]
+                        params[@"meta"] = [NSJSONSerialization dataWithJSONObject:item.indexMeta
                                                                           options:0
                                                                             error:&error];
                         if (error) {
@@ -215,14 +222,14 @@ NSString * const kCBSDefaultIndexName = @"cbs_fts";
                         break;
                     }
                     
-                    // 2. Insert into Meta
+                    // insert into meta table
                     long long rowId = [db lastInsertRowId];
                     NSString *metaTableName = [NSString stringWithFormat:@"%@_meta", weakSelf.indexName];
                     NSString *metaQuery = [NSString stringWithFormat:
                                            @"INSERT INTO %@ (rowid, item_id, item_type) VALUES (?, ?, ?)",
                                            metaTableName];
                     
-                    [db executeUpdate:metaQuery, @(rowId), identifer, @([item indexItemType])];
+                    [db executeUpdate:metaQuery, @(rowId), identifer, @(item.indexItemType)];
                     
                     if ([db hadError]) {
                         error = [db lastError];
@@ -323,11 +330,11 @@ NSString * const kCBSDefaultIndexName = @"cbs_fts";
             }
         }];
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (completionHandler) {
+        if (completionHandler) {
+            dispatch_async(dispatch_get_main_queue(), ^{
                 completionHandler(error);
-            }
-        });
+            });
+        }
     });
 }
 
@@ -377,11 +384,11 @@ NSString * const kCBSDefaultIndexName = @"cbs_fts";
         
         itemCount = [weakSelf itemCount];
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (completionHandler) {
+        if (completionHandler) {
+            dispatch_async(dispatch_get_main_queue(), ^{
                 completionHandler(itemCount, error);
-            }
-        });
+            });
+        }
     });
 }
 
@@ -406,11 +413,11 @@ NSString * const kCBSDefaultIndexName = @"cbs_fts";
             }
         }];
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (completionHandler) {
+        if (completionHandler) {
+            dispatch_async(dispatch_get_main_queue(), ^{
                 completionHandler(error);
-            }
-        });
+            });
+        }
     });
 }
 

@@ -35,12 +35,6 @@ extern NSInteger const CBSIndexItemTypeIgnore;
  */
 - (nonnull NSString *)indexTextContents;
 
-/**
- A value indicating if the receiver can be indexed.
- 
- @discussion This is only evaluated during indexing operations.
- */
-- (BOOL)canIndex;
 
 /// The item type for the receiver.
 - (CBSIndexItemType)indexItemType;
@@ -51,6 +45,25 @@ extern NSInteger const CBSIndexItemTypeIgnore;
  @discussion This data is not searchable, but is returned with the item. Should contain Foundation objects only (NSNumber, NSString, etc).
  */
 - (nullable NSDictionary *)indexMeta;
+
+@optional
+
+/**
+ A value indicating if the receiver can be indexed.
+ 
+ @discussion This is only evaluated during indexing operations.
+ */
+- (BOOL)canIndex;
+
+/**
+ The priority of the indexed item.
+ 
+ @discussion The results are sorted by priority in ascending order.
+ Defaults to 0.
+ */
+- (NSInteger)indexItemPriority;
+
+@required
 
 /// Invoked before the document is indexed. Called on background thread.
 - (void)willIndex;
@@ -69,6 +82,7 @@ extern NSInteger const CBSIndexItemTypeIgnore;
 @property (nonatomic, copy, nonnull) NSString *indexTextContents;
 @property (nonatomic, assign) CBSIndexItemType indexItemType;
 @property (nonatomic, copy, nullable) NSDictionary *indexMeta;
+@property (nonatomic, assign) NSInteger priority;
 
 /// Creates a new instance with a unique ID assigned
 + (nonnull instancetype)newWithUID;

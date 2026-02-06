@@ -61,7 +61,6 @@
 - (id)init {
     self = [super init];
     if (self) {
-        _orderType = CBSSearcherOrderTypeDefault;
         _searchQueue = dispatch_queue_create("com.cbssearcher", 0);
     }
     return self;
@@ -106,10 +105,8 @@
             }
             
             // add order by
-            if (weakSelf.orderType == CBSSearcherOrderTypeRelevance) {
-                // negative value, so ascending order puts best match first
-                [query appendFormat:@" ORDER BY rank "];
-            }
+            // negative value, so ascending order puts best match first
+            [query appendFormat:@" ORDER BY priority, rank "];
             
             // add limit info
             if (limit > 0) {
@@ -160,11 +157,11 @@
             }
         }];
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (completionHandler) {
+        if (completionHandler) {
+            dispatch_async(dispatch_get_main_queue(), ^{
                 completionHandler(resultItems, error);
-            }
-        });
+            });
+        }
     });
 }
 

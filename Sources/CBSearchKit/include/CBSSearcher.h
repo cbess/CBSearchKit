@@ -15,13 +15,6 @@ typedef void(^CBSSearcherItemsEnumerationHandler)(id<CBSIndexItem> _Nonnull item
 /// Returns a custom object that represents the specified item.
 typedef id _Nonnull (^CBSSearcherItemFactoryHandler)(id<CBSIndexItem> _Nonnull item);
 
-typedef NS_ENUM(NSInteger, CBSSearcherOrderType) {
-    /// Ordered naturally (default)
-    CBSSearcherOrderTypeDefault,
-    /// Ordered from most to least relevant
-    CBSSearcherOrderTypeRelevance
-};
-
 @class CBSIndexer;
 
 /// Represents a searcher that searches a `CBSIndexer` reference.
@@ -32,9 +25,6 @@ typedef NS_ENUM(NSInteger, CBSSearcherOrderType) {
 
 /// The indexer used internally for this searcher.
 @property (nonatomic, nonnull, readonly) CBSIndexer *indexer;
-
-/// The searcher results order type. Defaults to `CBSSearcherOrderTypeDefault`.
-@property (nonatomic, assign) CBSSearcherOrderType orderType;
 
 /// Initializes the searcher with the specified indexer.
 - (nonnull instancetype)initWithIndexer:(nonnull CBSIndexer *)indexer;

@@ -52,8 +52,13 @@ NSInteger const CBSIndexItemTypeIgnore = -1;
     doc.indexTextContents = self.indexTextContents;
     doc.indexItemType = self.indexItemType;
     doc.indexMeta = self.indexMeta;
+    doc.priority = self.priority;
     
     return doc;
+}
+
+- (NSInteger)indexItemPriority {
+    return self.priority;
 }
 
 - (BOOL)canIndex {
